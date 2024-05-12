@@ -3,7 +3,7 @@ package models
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"github.com/4cecoder/drip-campaign/config"
+	"github.com/4cecoder/drip-campaign/database"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -128,7 +128,7 @@ type ErrorResponse struct {
 // GetUserByEmail retrieves a user from the database based on the provided email
 func GetUserByEmail(email string) (*User, error) {
 	var user User
-	if err := config.DB.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := database.DB.Where("email = ?", email).First(&user).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return nil, nil // User not found
 		}

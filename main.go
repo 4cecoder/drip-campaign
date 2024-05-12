@@ -1,10 +1,12 @@
+// main.go
 package main
 
 import (
+	"github.com/4cecoder/drip-campaign/config"
 	"log"
 	"os"
 
-	"github.com/4cecoder/drip-campaign/config"
+	"github.com/4cecoder/drip-campaign/database"
 	"github.com/4cecoder/drip-campaign/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -19,7 +21,7 @@ func main() {
 
 	// Initialize the database connection
 	config.Init()
-	defer config.DB.Close()
+	defer database.DB.Close()
 
 	// Create a new Gin router
 	router := gin.Default()

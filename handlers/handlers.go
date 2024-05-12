@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"github.com/4cecoder/drip-campaign/auth"
+	"github.com/4cecoder/drip-campaign/database"
 	"net/http"
 	"strconv"
 
-	"github.com/4cecoder/drip-campaign/config"
 	"github.com/4cecoder/drip-campaign/models"
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +46,7 @@ func CreateCampaignHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Create(&campaign).Error; err != nil {
+	if err := database.DB.Create(&campaign).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create campaign"})
 		return
 	}
@@ -57,7 +57,7 @@ func CreateCampaignHandler(c *gin.Context) {
 // GetCampaignsHandler retrieves all drip campaigns
 func GetCampaignsHandler(c *gin.Context) {
 	var campaigns []models.DripCampaign
-	if err := config.DB.Find(&campaigns).Error; err != nil {
+	if err := database.DB.Find(&campaigns).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve campaigns"})
 		return
 	}
@@ -69,7 +69,7 @@ func GetCampaignsHandler(c *gin.Context) {
 func GetCampaignHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var campaign models.DripCampaign
-	if err := config.DB.First(&campaign, id).Error; err != nil {
+	if err := database.DB.First(&campaign, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign not found"})
 		return
 	}
@@ -81,7 +81,7 @@ func GetCampaignHandler(c *gin.Context) {
 func UpdateCampaignHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var campaign models.DripCampaign
-	if err := config.DB.First(&campaign, id).Error; err != nil {
+	if err := database.DB.First(&campaign, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign not found"})
 		return
 	}
@@ -91,7 +91,7 @@ func UpdateCampaignHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Save(&campaign).Error; err != nil {
+	if err := database.DB.Save(&campaign).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update campaign"})
 		return
 	}
@@ -103,12 +103,12 @@ func UpdateCampaignHandler(c *gin.Context) {
 func DeleteCampaignHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var campaign models.DripCampaign
-	if err := config.DB.First(&campaign, id).Error; err != nil {
+	if err := database.DB.First(&campaign, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign not found"})
 		return
 	}
 
-	if err := config.DB.Delete(&campaign).Error; err != nil {
+	if err := database.DB.Delete(&campaign).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete campaign"})
 		return
 	}
@@ -124,7 +124,7 @@ func CreateStageHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Create(&stage).Error; err != nil {
+	if err := database.DB.Create(&stage).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create stage"})
 		return
 	}
@@ -135,7 +135,7 @@ func CreateStageHandler(c *gin.Context) {
 // GetStagesHandler retrieves all stages
 func GetStagesHandler(c *gin.Context) {
 	var stages []models.Stage
-	if err := config.DB.Find(&stages).Error; err != nil {
+	if err := database.DB.Find(&stages).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve stages"})
 		return
 	}
@@ -147,7 +147,7 @@ func GetStagesHandler(c *gin.Context) {
 func GetStageHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var stage models.Stage
-	if err := config.DB.First(&stage, id).Error; err != nil {
+	if err := database.DB.First(&stage, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Stage not found"})
 		return
 	}
@@ -159,7 +159,7 @@ func GetStageHandler(c *gin.Context) {
 func UpdateStageHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var stage models.Stage
-	if err := config.DB.First(&stage, id).Error; err != nil {
+	if err := database.DB.First(&stage, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Stage not found"})
 		return
 	}
@@ -169,7 +169,7 @@ func UpdateStageHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Save(&stage).Error; err != nil {
+	if err := database.DB.Save(&stage).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update stage"})
 		return
 	}
@@ -181,12 +181,12 @@ func UpdateStageHandler(c *gin.Context) {
 func DeleteStageHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var stage models.Stage
-	if err := config.DB.First(&stage, id).Error; err != nil {
+	if err := database.DB.First(&stage, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Stage not found"})
 		return
 	}
 
-	if err := config.DB.Delete(&stage).Error; err != nil {
+	if err := database.DB.Delete(&stage).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete stage"})
 		return
 	}
@@ -202,7 +202,7 @@ func CreateStepHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Create(&step).Error; err != nil {
+	if err := database.DB.Create(&step).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create step"})
 		return
 	}
@@ -213,7 +213,7 @@ func CreateStepHandler(c *gin.Context) {
 // GetStepsHandler retrieves all steps
 func GetStepsHandler(c *gin.Context) {
 	var steps []models.Step
-	if err := config.DB.Find(&steps).Error; err != nil {
+	if err := database.DB.Find(&steps).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve steps"})
 		return
 	}
@@ -225,7 +225,7 @@ func GetStepsHandler(c *gin.Context) {
 func GetStepHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var step models.Step
-	if err := config.DB.First(&step, id).Error; err != nil {
+	if err := database.DB.First(&step, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Step not found"})
 		return
 	}
@@ -237,7 +237,7 @@ func GetStepHandler(c *gin.Context) {
 func UpdateStepHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var step models.Step
-	if err := config.DB.First(&step, id).Error; err != nil {
+	if err := database.DB.First(&step, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Step not found"})
 		return
 	}
@@ -247,7 +247,7 @@ func UpdateStepHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Save(&step).Error; err != nil {
+	if err := database.DB.Save(&step).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update step"})
 		return
 	}
@@ -259,12 +259,12 @@ func UpdateStepHandler(c *gin.Context) {
 func DeleteStepHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var step models.Step
-	if err := config.DB.First(&step, id).Error; err != nil {
+	if err := database.DB.First(&step, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Step not found"})
 		return
 	}
 
-	if err := config.DB.Delete(&step).Error; err != nil {
+	if err := database.DB.Delete(&step).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete step"})
 		return
 	}
@@ -280,7 +280,7 @@ func CreateCustomerHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Create(&customer).Error; err != nil {
+	if err := database.DB.Create(&customer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create customer"})
 		return
 	}
@@ -291,7 +291,7 @@ func CreateCustomerHandler(c *gin.Context) {
 // GetCustomersHandler retrieves all customers
 func GetCustomersHandler(c *gin.Context) {
 	var customers []models.Customer
-	if err := config.DB.Find(&customers).Error; err != nil {
+	if err := database.DB.Find(&customers).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve customers"})
 		return
 	}
@@ -303,7 +303,7 @@ func GetCustomersHandler(c *gin.Context) {
 func GetCustomerHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var customer models.Customer
-	if err := config.DB.First(&customer, id).Error; err != nil {
+	if err := database.DB.First(&customer, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Customer not found"})
 		return
 	}
@@ -315,7 +315,7 @@ func GetCustomerHandler(c *gin.Context) {
 func UpdateCustomerHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var customer models.Customer
-	if err := config.DB.First(&customer, id).Error; err != nil {
+	if err := database.DB.First(&customer, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Customer not found"})
 		return
 	}
@@ -325,7 +325,7 @@ func UpdateCustomerHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Save(&customer).Error; err != nil {
+	if err := database.DB.Save(&customer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update customer"})
 		return
 	}
@@ -337,12 +337,12 @@ func UpdateCustomerHandler(c *gin.Context) {
 func DeleteCustomerHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var customer models.Customer
-	if err := config.DB.First(&customer, id).Error; err != nil {
+	if err := database.DB.First(&customer, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Customer not found"})
 		return
 	}
 
-	if err := config.DB.Delete(&customer).Error; err != nil {
+	if err := database.DB.Delete(&customer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete customer"})
 		return
 	}
@@ -358,7 +358,7 @@ func CreateCampaignCustomerHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Create(&campaignCustomer).Error; err != nil {
+	if err := database.DB.Create(&campaignCustomer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create campaign customer"})
 		return
 	}
@@ -369,7 +369,7 @@ func CreateCampaignCustomerHandler(c *gin.Context) {
 // GetCampaignCustomersHandler retrieves all campaign customers
 func GetCampaignCustomersHandler(c *gin.Context) {
 	var campaignCustomers []models.CampaignCustomer
-	if err := config.DB.Find(&campaignCustomers).Error; err != nil {
+	if err := database.DB.Find(&campaignCustomers).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve campaign customers"})
 		return
 	}
@@ -381,7 +381,7 @@ func GetCampaignCustomersHandler(c *gin.Context) {
 func GetCampaignCustomerHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var campaignCustomer models.CampaignCustomer
-	if err := config.DB.First(&campaignCustomer, id).Error; err != nil {
+	if err := database.DB.First(&campaignCustomer, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign customer not found"})
 		return
 	}
@@ -393,7 +393,7 @@ func GetCampaignCustomerHandler(c *gin.Context) {
 func UpdateCampaignCustomerHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var campaignCustomer models.CampaignCustomer
-	if err := config.DB.First(&campaignCustomer, id).Error; err != nil {
+	if err := database.DB.First(&campaignCustomer, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign customer not found"})
 		return
 	}
@@ -403,7 +403,7 @@ func UpdateCampaignCustomerHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Save(&campaignCustomer).Error; err != nil {
+	if err := database.DB.Save(&campaignCustomer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update campaign customer"})
 		return
 	}
@@ -415,11 +415,11 @@ func UpdateCampaignCustomerHandler(c *gin.Context) {
 func DeleteCampaignCustomerHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var campaignCustomer models.CampaignCustomer
-	if err := config.DB.First(&campaignCustomer, id).Error; err != nil {
+	if err := database.DB.First(&campaignCustomer, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign customer not found"})
 		return
 	}
-	if err := config.DB.Delete(&campaignCustomer).Error; err != nil {
+	if err := database.DB.Delete(&campaignCustomer).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete campaign customer"})
 		return
 	}
@@ -430,7 +430,7 @@ func DeleteCampaignCustomerHandler(c *gin.Context) {
 // GetSettingsHandler retrieves the user settings
 func GetSettingsHandler(c *gin.Context) {
 	var settings models.Settings
-	if err := config.DB.First(&settings).Error; err != nil {
+	if err := database.DB.First(&settings).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Settings not found"})
 		return
 	}
@@ -441,7 +441,7 @@ func GetSettingsHandler(c *gin.Context) {
 // UpdateSettingsHandler updates the user settings
 func UpdateSettingsHandler(c *gin.Context) {
 	var settings models.Settings
-	if err := config.DB.First(&settings).Error; err != nil {
+	if err := database.DB.First(&settings).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Settings not found"})
 		return
 	}
@@ -451,7 +451,7 @@ func UpdateSettingsHandler(c *gin.Context) {
 		return
 	}
 
-	if err := config.DB.Save(&settings).Error; err != nil {
+	if err := database.DB.Save(&settings).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update settings"})
 		return
 	}

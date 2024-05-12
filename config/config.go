@@ -2,16 +2,13 @@ package config
 
 import (
 	"fmt"
+	"github.com/4cecoder/drip-campaign/database"
 	"log"
 	"os"
 
 	"github.com/4cecoder/drip-campaign/models"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-)
-
-var (
-	DB *gorm.DB
 )
 
 type Config struct {
@@ -31,7 +28,7 @@ func Init() {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		config.DBHost, config.DBPort, config.DBUser, config.DBName, config.DBPassword)
 
-	DB, err = gorm.Open("postgres", dsn)
+	database.DB, err = gorm.Open("postgres", dsn)
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
@@ -39,7 +36,7 @@ func Init() {
 	log.Println("Connected to the database")
 
 	// Migrate the database schema
-	DB.AutoMigrate(
+	database.DB.AutoMigrate(
 		&models.User{},
 		&models.DripCampaign{},
 		&models.Stage{},
