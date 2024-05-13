@@ -45,7 +45,7 @@ The entire application is hosted using the Golang server. Frontend routes will b
 
 ## Dependencies
 - Backend: Golang, Gin, Gorm, PostgreSQL
-- Frontend: Next.js, Tailwind CSS
+- Frontend: Next.js, Typescript, Tailwind CSS
 
 ## Contributors
 - [4cecoder](https://github.com/4cecoder)
