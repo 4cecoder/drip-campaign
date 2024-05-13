@@ -6,6 +6,31 @@
 
 This is a simple web application for email drip campaign automation. It allows users to create drip campaigns consisting of multiple stages, each with predefined steps. The application automates the process of sending emails to customers at scheduled intervals, based on the configured drip campaign.
 
+## Software Overview:
+The product is a web application aimed at managing sales campaigns and customer interactions. It consists of the following main features:
+
+**Import Customers**
+- Users can upload CSV or Excel files containing customer data (first name, last name, phone, email, CRM ID)
+- The application parses the file and maps the columns to the corresponding customer fields using fuzzy string matching
+- Users can review the parsed customer data and create new customer records in the CRM system
+
+**Sales Stages**
+- Users can define custom sales stages (e.g., Lead Generation, Qualification, Proposal, etc.)
+- Each stage can have multiple steps with customizable email templates and wait times
+- Users can edit stage names, add/remove steps, and configure email templates and wait times for each step
+
+**Settings**
+- Users can configure the CRM integration by selecting the CRM system (Enerflo, HubSpot, Salesforce) and providing the base URL and API key
+- Users can set up email settings, including the Gmail account and password used for sending campaign emails
+- Users can set the polling interval for checking customer progression through the sales stages
+
+**Customer Management**
+- Users can view and manage customers assigned to the email campaign
+- Users can change the customer's current stage and stage step
+- Users can start, pause, or resume the email campaign for individual customers
+- Users can manually send emails to customers
+- Users can search for unmanaged leads and assign them to the email campaign
+
 ## Backend Models
 
 ### DripCampaign
