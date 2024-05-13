@@ -5,6 +5,8 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faPlay, faPause, faEnvelope, faArrowRight, faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import { Customer, StagePoints } from './types';
+import Link from "next/link";
+import {faFileImport} from "@fortawesome/free-solid-svg-icons/faFileImport";
 const stagePoints: StagePoints = {
     leads: ['Identified', 'Contacted', 'Engaged'],
     consultation: ['Initial Meeting', 'Follow-up', 'Final Review'],
@@ -102,6 +104,12 @@ const CustomerManagement: React.FC = () => {
                 <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
                     Drip Campaign Management
                 </h1>
+                <Link href="/import">
+                    <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 mb-4">
+                        <FontAwesomeIcon icon={faFileImport} className="mr-2" />
+                        Import Customers
+                    </button>
+                </Link>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="bg-gray-900 bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg">
                         <h2 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
