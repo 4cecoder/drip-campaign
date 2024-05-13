@@ -10,6 +10,7 @@ type Step = {
     name: string;
     emailSubject: string;
     emailTemplate: string;
+    waitTime: number;
 };
 
 type Stage = {
@@ -23,18 +24,18 @@ const initialStages: Stage[] = [
         id: '1',
         name: 'Lead Generation',
         steps: [
-            { id: '1', name: 'Attract', emailSubject: 'Exciting Offer', emailTemplate: '<p>Hello {{name}},</p><p>We have an exciting offer for you!</p>' },
-            { id: '2', name: 'Capture', emailSubject: 'Thank You', emailTemplate: '<p>Dear {{name}},</p><p>Thank you for your interest in our product.</p>' },
-            { id: '3', name: 'Nurture', emailSubject: 'Tips & Tricks', emailTemplate: '<p>Hi {{name}},</p><p>We hope you\'re enjoying our product. Here are some tips to get the most out of it.</p>' },
+            { id: '1', name: 'Attract', emailSubject: 'Exciting Offer', emailTemplate: '<p>Hello {{name}},</p><p>We have an exciting offer for you!</p>', waitTime: 5 },
+            { id: '2', name: 'Capture', emailSubject: 'Thank You', emailTemplate: '<p>Dear {{name}},</p><p>Thank you for your interest in our product.</p>', waitTime: 5 },
+            { id: '3', name: 'Nurture', emailSubject: 'Tips & Tricks', emailTemplate: '<p>Hi {{name}},</p><p>We hope you\'re enjoying our product. Here are some tips to get the most out of it.</p>', waitTime: 5 },
         ],
     },
     {
         id: '2',
         name: 'Qualification',
         steps: [
-            { id: '4', name: 'Identify', emailSubject: 'Potential Customer', emailTemplate: '<p>Hello {{name}},</p><p>We have identified you as a potential customer.</p>' },
-            { id: '5', name: 'Assess', emailSubject: 'Needs Assessment', emailTemplate: '<p>Dear {{name}},</p><p>We would like to assess your needs and see how we can assist you.</p>' },
-            { id: '6', name: 'Qualify', emailSubject: 'Product Fit', emailTemplate: '<p>Hi {{name}},</p><p>Based on our assessment, we believe our product is a great fit for you.</p>' },
+            { id: '4', name: 'Identify', emailSubject: 'Potential Customer', emailTemplate: '<p>Hello {{name}},</p><p>We have identified you as a potential customer.</p>', waitTime: 5 },
+            { id: '5', name: 'Assess', emailSubject: 'Needs Assessment', emailTemplate: '<p>Dear {{name}},</p><p>We would like to assess your needs and see how we can assist you.</p>', waitTime: 5 },
+            { id: '6', name: 'Qualify', emailSubject: 'Product Fit', emailTemplate: '<p>Hi {{name}},</p><p>Based on our assessment, we believe our product is a great fit for you.</p>', waitTime: 5 },
         ],
     },
 ];
@@ -80,6 +81,7 @@ const Stages: React.FC = () => {
                 name: newStepName,
                 emailSubject: '',
                 emailTemplate: '',
+                waitTime: 5,
             };
             setStages(
                 stages.map((stage) =>
@@ -100,6 +102,21 @@ const Stages: React.FC = () => {
                         ...stage,
                         steps: stage.steps.map((step) =>
                             step.id === stepId ? { ...step, emailSubject: newEmailSubject } : step
+                        ),
+                    }
+                    : stage
+            )
+        );
+    };
+
+    const updateStepWaitTime = (stageId: string, stepId: string, newWaitTime: number) => {
+        setStages(
+            stages.map((stage) =>
+                stage.id === stageId
+                    ? {
+                        ...stage,
+                        steps: stage.steps.map((step) =>
+                            step.id === stepId ? { ...step, waitTime: newWaitTime } : step
                         ),
                     }
                     : stage
@@ -140,6 +157,7 @@ const Stages: React.FC = () => {
         if (selectedStage && selectedStep) {
             updateStepEmailSubject(selectedStage.id, selectedStep.id, selectedStep.emailSubject);
             updateStepEmailTemplate(selectedStage.id, selectedStep.id, selectedStep.emailTemplate);
+            updateStepWaitTime(selectedStage.id, selectedStep.id, selectedStep.waitTime);
         }
     };
 
@@ -227,7 +245,8 @@ const Stages: React.FC = () => {
                 </div>
                 <div className="col-span-1">
                     {selectedStep && (
-                        <div className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
+                        <div
+                            className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
                             <h3 className="text-2xl font-bold mb-4">{selectedStep.name}</h3>
                             <div className="mb-4">
                                 <label htmlFor="emailSubject" className="block mb-2">
@@ -267,15 +286,35 @@ const Stages: React.FC = () => {
                                 onClick={saveEmailSubjectAndTemplate}
                                 className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200"
                             >
-                                <FontAwesomeIcon icon={faSave} className="mr-2" />
+                                <FontAwesomeIcon icon={faSave} className="mr-2"/>
                                 Save
                             </button>
-                            <div className="mt-4">
-                                <h4 className="text-xl font-bold mb-2">Preview:</h4>
-                                <div className="bg-gray-900 p-4 rounded">
-                                    <p className="font-bold mb-2">{selectedStep.emailSubject}</p>
-                                    <div dangerouslySetInnerHTML={{ __html: selectedStep.emailTemplate }}></div>
+                            {selectedStep.emailTemplate.trim() !== '' && (
+                                <div className="mt-4">
+                                    <h4 className="text-xl font-bold mb-2">Preview:</h4>
+                                    <div className="bg-gray-900 p-4 rounded">
+                                        <p className="font-bold mb-2">{selectedStep.emailSubject}</p>
+                                        <div dangerouslySetInnerHTML={{__html: selectedStep.emailTemplate}}></div>
+                                    </div>
                                 </div>
+                            )}
+
+                            <div className="mb-4">
+                                <label htmlFor="waitTime" className="block mb-2 mt-6">
+                                    Wait Time (days):
+                                </label>
+                                <input
+                                    type="number"
+                                    id="waitTime"
+                                    value={selectedStep.waitTime}
+                                    onChange={(e) =>
+                                        setSelectedStep({
+                                            ...selectedStep,
+                                            waitTime: parseInt(e.target.value),
+                                        })
+                                    }
+                                    className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
                             </div>
                         </div>
                     )}
