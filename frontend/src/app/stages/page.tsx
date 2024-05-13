@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes, faSave } from '@fortawesome/free-solid-svg-icons';
+import DOMPurify from 'dompurify';
 
 type Step = {
     id: string;
@@ -95,13 +96,14 @@ const Stages: React.FC = () => {
     };
 
     const updateStepEmailSubject = (stageId: string, stepId: string, newEmailSubject: string) => {
+        const sanitizedEmailSubject = DOMPurify.sanitize(newEmailSubject);
         setStages(
             stages.map((stage) =>
                 stage.id === stageId
                     ? {
                         ...stage,
                         steps: stage.steps.map((step) =>
-                            step.id === stepId ? { ...step, emailSubject: newEmailSubject } : step
+                            step.id === stepId ? { ...step, emailSubject: sanitizedEmailSubject } : step
                         ),
                     }
                     : stage
@@ -125,13 +127,14 @@ const Stages: React.FC = () => {
     };
 
     const updateStepEmailTemplate = (stageId: string, stepId: string, newEmailTemplate: string) => {
+        const sanitizedEmailTemplate = DOMPurify.sanitize(newEmailTemplate);
         setStages(
             stages.map((stage) =>
                 stage.id === stageId
                     ? {
                         ...stage,
                         steps: stage.steps.map((step) =>
-                            step.id === stepId ? { ...step, emailTemplate: newEmailTemplate } : step
+                            step.id === stepId ? { ...step, emailTemplate: sanitizedEmailTemplate } : step
                         ),
                     }
                     : stage
@@ -292,12 +295,13 @@ const Stages: React.FC = () => {
                             {selectedStep.emailTemplate.trim() !== '' && (
                                 <div className="mt-4">
                                     <h4 className="text-xl font-bold mb-2">Preview:</h4>
-                                    <div className="bg-gray-900 p-4 rounded">
-                                        <p className="font-bold mb-2">{selectedStep.emailSubject}</p>
-                                        <div dangerouslySetInnerHTML={{__html: selectedStep.emailTemplate}}></div>
+                                    <div className="bg-gray-900 p-4 rounded overflow-auto max-h-[300px] max-w-[500px]">
+                                        <p className="font-bold mb-2">{DOMPurify.sanitize(selectedStep.emailSubject)}</p>
+                                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedStep.emailTemplate) }}></div>
                                     </div>
                                 </div>
                             )}
+
 
                             <div className="mb-4">
                                 <label htmlFor="waitTime" className="block mb-2 mt-6">
