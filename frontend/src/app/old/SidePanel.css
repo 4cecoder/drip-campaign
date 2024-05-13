@@ -1,0 +1,43 @@
+/* src/components/SidePanel.css */
+
+.side-panel {
+    width: 200px;
+    height: 100vh;
+    background-color: #f0f0f0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.side-panel h2 {
+    margin-bottom: 20px;
+}
+
+.side-panel nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-panel nav ul li {
+    margin-bottom: 10px;
+}
+
+.side-panel nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+@media screen and (max-width: 768px) {
+    .side-panel {
+        width: 250px;
+        transform: translateX(-100%);
+    }
+
+    .side-panel.open {
+        transform: translateX(0);
+    }
+}
