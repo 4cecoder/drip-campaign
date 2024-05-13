@@ -1,6 +1,6 @@
 # drip-campaign
 
-[![Go](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml/badge.svg)](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml)
+[![Go](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml/badge.svg)](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml) [![Node.js CI](https://github.com/4cecoder/drip-campaign/actions/workflows/node.js.yml/badge.svg)](https://github.com/4cecoder/drip-campaign/actions/workflows/node.js.yml)
 
 ## Introduction
 
