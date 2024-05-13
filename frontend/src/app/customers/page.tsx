@@ -121,7 +121,7 @@ const CustomerManagement: React.FC = () => {
                     </div>
                     <div className="bg-gray-900 bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg">
                         <h2 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-                            Search Unmanaged Enerflo Leads
+                            Search Unmanaged Leads
                         </h2>
                         {demoUnassignedCustomers.map((customer) => (
                             <UnassignedCustomerCard
