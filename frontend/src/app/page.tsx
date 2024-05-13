@@ -46,14 +46,14 @@ export default function Home() {
                                     Campaign Stages
                                 </Link>
                             </li>
-                            <li>
-                                <Link href="/timeline" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
-                  <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faStream} />
-                  </span>
-                                    Campaign Timeline
-                                </Link>
-                            </li>
+                  {/*          <li>*/}
+                  {/*              <Link href="/timeline" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">*/}
+                  {/*<span className="mr-2 flex items-center justify-center w-6 h-6">*/}
+                  {/*  <FontAwesomeIcon icon={faStream} />*/}
+                  {/*</span>*/}
+                  {/*                  Campaign Timeline*/}
+                  {/*              </Link>*/}
+                  {/*          </li>*/}
                             <li>
                                 <Link href="/tasks" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
