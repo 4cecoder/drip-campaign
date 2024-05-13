@@ -48,8 +48,8 @@ The entire application is hosted using the Golang server. Frontend routes will b
 - Frontend: Next.js, Tailwind CSS
 
 ## Contributors
-- [Your Name](link-to-profile)
-- [Contributor 2](link-to-profile)
+- [4cecoder](https://github.com/4cecoder)
+- [Ahmed](https://github.com/AhmedBarre1)
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
