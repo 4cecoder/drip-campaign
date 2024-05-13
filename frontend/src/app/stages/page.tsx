@@ -3,8 +3,10 @@
 
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes, faSave } from '@fortawesome/free-solid-svg-icons';
-import DOMPurify from 'dompurify';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import EmailForm from "@/app/stages/EmailForm";
+import StageComponent from "@/app/stages/Stage";
+import WaitTimeInput from "@/app/stages/WaitTimeInput";
 
 type Step = {
     id: string;
@@ -95,54 +97,6 @@ const Stages: React.FC = () => {
         }
     };
 
-    const updateStepEmailSubject = (stageId: string, stepId: string, newEmailSubject: string) => {
-        const sanitizedEmailSubject = DOMPurify.sanitize(newEmailSubject);
-        setStages(
-            stages.map((stage) =>
-                stage.id === stageId
-                    ? {
-                        ...stage,
-                        steps: stage.steps.map((step) =>
-                            step.id === stepId ? { ...step, emailSubject: sanitizedEmailSubject } : step
-                        ),
-                    }
-                    : stage
-            )
-        );
-    };
-
-    const updateStepWaitTime = (stageId: string, stepId: string, newWaitTime: number) => {
-        setStages(
-            stages.map((stage) =>
-                stage.id === stageId
-                    ? {
-                        ...stage,
-                        steps: stage.steps.map((step) =>
-                            step.id === stepId ? { ...step, waitTime: newWaitTime } : step
-                        ),
-                    }
-                    : stage
-            )
-        );
-    };
-
-    const updateStepEmailTemplate = (stageId: string, stepId: string, newEmailTemplate: string) => {
-        const sanitizedEmailTemplate = DOMPurify.sanitize(newEmailTemplate);
-        setStages(
-            stages.map((stage) =>
-                stage.id === stageId
-                    ? {
-                        ...stage,
-                        steps: stage.steps.map((step) =>
-                            step.id === stepId ? { ...step, emailTemplate: sanitizedEmailTemplate } : step
-                        ),
-                    }
-                    : stage
-            )
-        );
-        localStorage.setItem('stages', JSON.stringify(stages));
-    };
-
     const deleteStep = (stageId: string, stepId: string) => {
         setStages(
             stages.map((stage) =>
@@ -158,9 +112,25 @@ const Stages: React.FC = () => {
 
     const saveEmailSubjectAndTemplate = () => {
         if (selectedStage && selectedStep) {
-            updateStepEmailSubject(selectedStage.id, selectedStep.id, selectedStep.emailSubject);
-            updateStepEmailTemplate(selectedStage.id, selectedStep.id, selectedStep.emailTemplate);
-            updateStepWaitTime(selectedStage.id, selectedStep.id, selectedStep.waitTime);
+            setStages(
+                stages.map((stage) =>
+                    stage.id === selectedStage.id
+                        ? {
+                            ...stage,
+                            steps: stage.steps.map((step) =>
+                                step.id === selectedStep.id
+                                    ? {
+                                        ...step,
+                                        emailSubject: selectedStep.emailSubject,
+                                        emailTemplate: selectedStep.emailTemplate,
+                                    }
+                                    : step
+                            ),
+                        }
+                        : stage
+                )
+            );
+            localStorage.setItem('stages', JSON.stringify(stages));
         }
     };
 
@@ -172,61 +142,18 @@ const Stages: React.FC = () => {
             <div className="grid grid-cols-2 gap-8">
                 <div className="col-span-1">
                     {stages.map((stage) => (
-                        <div
+                        <StageComponent
                             key={stage.id}
-                            className="bg-black bg-opacity-50 rounded-lg p-6 mb-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700"
-                        >
-                            <div className="flex items-center justify-between mb-4">
-                                <input
-                                    type="text"
-                                    value={stage.name}
-                                    onChange={(e) => updateStageName(stage.id, e.target.value)}
-                                    className="text-2xl font-bold bg-transparent focus:outline-none"
-                                />
-                                <FontAwesomeIcon
-                                    icon={faTimes}
-                                    className="text-red-500 text-2xl cursor-pointer hover:text-red-600 transition duration-200"
-                                    onClick={() => deleteStage(stage.id)}
-                                />
-                            </div>
-                            <ul className="ml-6 list-disc">
-                                {stage.steps.map((step) => (
-                                    <li
-                                        key={step.id}
-                                        className="mb-2 flex items-center cursor-pointer"
-                                        onClick={() => {
-                                            setSelectedStage(stage);
-                                            setSelectedStep(step);
-                                        }}
-                                    >
-                                        {step.name}
-                                        <FontAwesomeIcon
-                                            icon={faTimes}
-                                            className="ml-2 text-red-500 cursor-pointer hover:text-red-600 transition duration-200"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteStep(stage.id, step.id);
-                                            }}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="flex items-center mt-4">
-                                <input
-                                    type="text"
-                                    value={newStepName}
-                                    onChange={(e) => setNewStepName(e.target.value)}
-                                    className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter new step"
-                                />
-                                <button
-                                    onClick={() => addStep(stage.id)}
-                                    className="ml-2 px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200"
-                                >
-                                    <FontAwesomeIcon icon={faPlus} />
-                                </button>
-                            </div>
-                        </div>
+                            stage={stage}
+                            updateStageName={updateStageName}
+                            deleteStage={deleteStage}
+                            addStep={addStep}
+                            deleteStep={deleteStep}
+                            setSelectedStage={setSelectedStage}
+                            setSelectedStep={setSelectedStep}
+                            newStepName={newStepName}
+                            setNewStepName={setNewStepName}
+                        />
                     ))}
                     <div className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
                         <div className="flex items-center">
@@ -248,78 +175,17 @@ const Stages: React.FC = () => {
                 </div>
                 <div className="col-span-1">
                     {selectedStep && (
-                        <div
-                            className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
+                        <div className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
                             <h3 className="text-2xl font-bold mb-4">{selectedStep.name}</h3>
-                            <div className="mb-4">
-                                <label htmlFor="emailSubject" className="block mb-2">
-                                    Email Subject:
-                                </label>
-                                <input
-                                    type="text"
-                                    id="emailSubject"
-                                    value={selectedStep.emailSubject}
-                                    onChange={(e) =>
-                                        setSelectedStep({
-                                            ...selectedStep,
-                                            emailSubject: e.target.value,
-                                        })
-                                    }
-                                    className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="emailTemplate" className="block mb-2">
-                                    Email Template:
-                                </label>
-                                <textarea
-                                    id="emailTemplate"
-                                    value={selectedStep.emailTemplate}
-                                    onChange={(e) =>
-                                        setSelectedStep({
-                                            ...selectedStep,
-                                            emailTemplate: e.target.value,
-                                        })
-                                    }
-                                    className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    rows={10}
-                                ></textarea>
-                            </div>
-                            <button
-                                onClick={saveEmailSubjectAndTemplate}
-                                className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200"
-                            >
-                                <FontAwesomeIcon icon={faSave} className="mr-2"/>
-                                Save
-                            </button>
-                            {selectedStep.emailTemplate.trim() !== '' && (
-                                <div className="mt-4">
-                                    <h4 className="text-xl font-bold mb-2">Preview:</h4>
-                                    <div className="bg-gray-900 p-4 rounded overflow-auto max-h-[300px] max-w-[500px]">
-                                        <p className="font-bold mb-2">{DOMPurify.sanitize(selectedStep.emailSubject)}</p>
-                                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedStep.emailTemplate) }}></div>
-                                    </div>
-                                </div>
-                            )}
-
-
-                            <div className="mb-4">
-                                <label htmlFor="waitTime" className="block mb-2 mt-6">
-                                    Wait Time (days):
-                                </label>
-                                <input
-                                    type="number"
-                                    id="waitTime"
-                                    value={selectedStep.waitTime}
-                                    onChange={(e) =>
-                                        setSelectedStep({
-                                            ...selectedStep,
-                                            waitTime: parseInt(e.target.value),
-                                        })
-                                    }
-                                    className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
+                            <EmailForm
+                                selectedStep={selectedStep}
+                                setSelectedStep={setSelectedStep}
+                                saveEmailSubjectAndTemplate={saveEmailSubjectAndTemplate}
+                            />
+                            <WaitTimeInput
+                                selectedStep={selectedStep}
+                                setSelectedStep={setSelectedStep}
+                            />
                         </div>
                     )}
                 </div>
