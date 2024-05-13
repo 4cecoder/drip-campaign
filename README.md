@@ -38,7 +38,7 @@ This is a simple web application for email drip campaign automation. It allows u
 The backend is built with Golang using the Gin framework and Gorm for database interactions. It exposes RESTful API endpoints for managing drip campaigns, customers, email templates, and user authentication.
 
 ## Frontend
-The frontend is under development and will be built using Next.js and Tailwind CSS. It will provide a user-friendly interface for creating and managing drip campaigns, viewing customer data, and configuring email templates.
+The frontend is under development and will be built using TypeScript, Next.js, and Tailwind CSS. It will provide a user-friendly interface for creating and managing drip campaigns, viewing customer data, and configuring email templates.
 
 ## Hosting
 The entire application is hosted using the Golang server. Frontend routes will be accessible from the base URL (`/`) and backend routes will be prefixed with `/api/v1/`.
