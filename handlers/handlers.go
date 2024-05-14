@@ -41,10 +41,19 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	token, err := auth.GenerateToken(user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-		return
+	var token string
+	if user.Role == "admin" {
+		token, err = auth.GenerateAdminToken(user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate admin token"})
+			return
+		}
+	} else {
+		token, err = auth.GenerateToken(user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})

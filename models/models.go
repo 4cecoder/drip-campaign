@@ -97,6 +97,7 @@ type User struct {
 	Model
 	Email    string `gorm:"unique;not null"`
 	Password string `gorm:"not null"`
+	Role     string `gorm:"not null"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
