@@ -334,7 +334,7 @@ func CreateStepHandler(c *gin.Context) {
 // @Router /steps [get]
 func GetStepsHandler(c *gin.Context) {
 	var steps []models.Step
-	if err := database.DB.Find(&steps).Error; err != nil {
+	if err := database.DB.Preload("EmailTemplate").Find(&steps).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve steps"})
 		return
 	}
@@ -354,7 +354,7 @@ func GetStepsHandler(c *gin.Context) {
 func GetStepHandler(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var step models.Step
-	if err := database.DB.First(&step, id).Error; err != nil {
+	if err := database.DB.Preload("EmailTemplate").First(&step, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Step not found"})
 		return
 	}
@@ -762,4 +762,126 @@ func SendEmailHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
+}
+
+// CreateEmailTemplateHandler creates a new email template
+// @Summary Create an email template
+// @Description Create a new email template
+// @Tags EmailTemplates
+// @Accept json
+// @Produce json
+// @Param emailTemplate body models.EmailTemplate true "Email template data"
+// @Success 201 {object} models.EmailTemplate
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /email-templates [post]
+func CreateEmailTemplateHandler(c *gin.Context) {
+	var emailTemplate models.EmailTemplate
+	if err := c.ShouldBindJSON(&emailTemplate); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := database.DB.Create(&emailTemplate).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create email template"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, emailTemplate)
+}
+
+// GetEmailTemplatesHandler retrieves all email templates
+// @Summary Get all email templates
+// @Description Retrieve all email templates
+// @Tags EmailTemplates
+// @Produce json
+// @Success 200 {array} models.EmailTemplate
+// @Failure 500 {object} models.ErrorResponse
+// @Router /email-templates [get]
+func GetEmailTemplatesHandler(c *gin.Context) {
+	var emailTemplates []models.EmailTemplate
+	if err := database.DB.Find(&emailTemplates).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve email templates"})
+		return
+	}
+	c.JSON(http.StatusOK, emailTemplates)
+
+	// GetEmailTemplateHandler retrieves a specific email template by ID
+	// @Summary Get an email template
+	// @Description Retrieve a specific email template by ID
+	// @Tags EmailTemplates
+	// @Produce json
+	// @Param id path int true "Email template ID"
+	// @Success 200 {object} models.EmailTemplate
+	// @Failure 404 {object} models.ErrorResponse
+	// @Router /email-templates/{id} [get]
+}
+func GetEmailTemplateHandler(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var emailTemplate models.EmailTemplate
+	if err := database.DB.First(&emailTemplate, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Email template not found"})
+		return
+	}
+	c.JSON(http.StatusOK, emailTemplate)
+}
+
+// UpdateEmailTemplateHandler updates a specific email template by ID
+// @Summary Update an email template
+// @Description Update a specific email template by ID
+// @Tags EmailTemplates
+// @Accept json
+// @Produce json
+// @Param id path int true "Email template ID"
+// @Param emailTemplate body models.EmailTemplate true "Updated email template data"
+// @Success 200 {object} models.EmailTemplate
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /email-templates/{id} [put]
+func UpdateEmailTemplateHandler(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var emailTemplate models.EmailTemplate
+	if err := database.DB.First(&emailTemplate, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Email template not found"})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&emailTemplate); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := database.DB.Save(&emailTemplate).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update email template"})
+		return
+	}
+
+	c.JSON(http.StatusOK, emailTemplate)
+}
+
+// DeleteEmailTemplateHandler deletes a specific email template by ID
+// @Summary Delete an email template
+// @Description Delete a specific email template by ID
+// @Tags EmailTemplates
+// @Produce json
+// @Param id path int true "Email template ID"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /email-templates/{id} [delete]
+func DeleteEmailTemplateHandler(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var emailTemplate models.EmailTemplate
+	if err := database.DB.First(&emailTemplate, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Email template not found"})
+		return
+	}
+
+	if err := database.DB.Delete(&emailTemplate).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete email template"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Email template deleted successfully"})
 }

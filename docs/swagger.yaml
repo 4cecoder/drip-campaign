@@ -77,6 +77,25 @@ definitions:
       to:
         type: string
     type: object
+  models.EmailTemplate:
+    properties:
+      body:
+        type: string
+      content_type:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      subject:
+        type: string
+      updated_at:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       error:
@@ -141,10 +160,10 @@ definitions:
         type: string
       description:
         type: string
-      email_body:
-        type: string
-      email_subject:
-        type: string
+      email_template:
+        $ref: '#/definitions/models.EmailTemplate'
+      email_template_id:
+        type: integer
       id:
         type: integer
       name:
@@ -578,6 +597,119 @@ paths:
       summary: Update a customer
       tags:
       - Customers
+  /email-templates:
+    get:
+      description: Retrieve all email templates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.EmailTemplate'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all email templates
+      tags:
+      - EmailTemplates
+    post:
+      consumes:
+      - application/json
+      description: Create a new email template
+      parameters:
+      - description: Email template data
+        in: body
+        name: emailTemplate
+        required: true
+        schema:
+          $ref: '#/definitions/models.EmailTemplate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.EmailTemplate'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create an email template
+      tags:
+      - EmailTemplates
+  /email-templates/{id}:
+    delete:
+      description: Delete a specific email template by ID
+      parameters:
+      - description: Email template ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an email template
+      tags:
+      - EmailTemplates
+    put:
+      consumes:
+      - application/json
+      description: Update a specific email template by ID
+      parameters:
+      - description: Email template ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated email template data
+        in: body
+        name: emailTemplate
+        required: true
+        schema:
+          $ref: '#/definitions/models.EmailTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.EmailTemplate'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an email template
+      tags:
+      - EmailTemplates
   /login:
     post:
       consumes:

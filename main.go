@@ -5,6 +5,7 @@ import (
 	"github.com/4cecoder/drip-campaign/config"
 	"github.com/4cecoder/drip-campaign/database"
 	_ "github.com/4cecoder/drip-campaign/docs"
+	"github.com/4cecoder/drip-campaign/models"
 	"github.com/4cecoder/drip-campaign/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -47,6 +48,15 @@ func main() {
 		c.Next()
 	})
 
+	// Create an admin user
+	// Change me to your desired admin username and password
+	adminUsername := "admin"
+	adminPassword := "password"
+	err = CreateAdminUser(adminUsername, adminPassword)
+	if err != nil {
+		log.Println("Failed to create admin user: " + err.Error())
+	}
+
 	// Register routes
 	routes.RegisterRoutes(router)
 	// Register Swagger route
@@ -63,4 +73,22 @@ func main() {
 	if err != nil {
 		log.Fatal("Error starting server:", err)
 	}
+}
+
+func CreateAdminUser(username, password string) error {
+	hashedPassword, err := models.HashPassword(password)
+	if err != nil {
+		return err
+	}
+
+	adminUser := models.User{
+		Email:    username,
+		Password: hashedPassword,
+	}
+
+	if err := database.DB.Create(&adminUser).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -39,12 +39,12 @@ type Stage struct {
 
 type Step struct {
 	Model
-	StageID      uint   `json:"stage_id"`
-	Name         string `json:"name"`
-	Description  string `json:"description"`
-	EmailSubject string `json:"email_subject"`
-	EmailBody    string `json:"email_body"`
-	WaitTime     int    `json:"wait_time"`
+	StageID         uint           `json:"stage_id"`
+	Name            string         `json:"name"`
+	Description     string         `json:"description"`
+	EmailTemplateID uint           `json:"email_template_id"`
+	EmailTemplate   *EmailTemplate `json:"email_template,omitempty" gorm:"foreignkey:EmailTemplateID"`
+	WaitTime        int            `json:"wait_time"`
 }
 
 type Customer struct {
@@ -70,7 +70,7 @@ type EmailTemplate struct {
 	Name        string `json:"name"`
 	Subject     string `json:"subject"`
 	Body        string `json:"body"`
-	ContentType string `json:"content_type"`
+	ContentType string `json:"content_type" description:"Specifies the content type of the email body. Valid values are 'text/plain' for plain text emails and 'text/html' for HTML emails."`
 }
 
 type EmailLog struct {
@@ -143,7 +143,11 @@ func GetUserByEmail(email string) (*User, error) {
 
 func HashPassword(password string) (string, error) {
 	salt := GenerateSalt()
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password+salt), bcrypt.DefaultCost)
+	truncatedPassword := password
+	if len(password) > 72 {
+		truncatedPassword = password[:72]
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(truncatedPassword+salt), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
@@ -155,7 +159,11 @@ func CheckPasswordHash(password, hashedPassword string) bool {
 	if len(parts) != 2 {
 		return false
 	}
-	err := bcrypt.CompareHashAndPassword([]byte(parts[0]), []byte(password+parts[1]))
+	truncatedPassword := password
+	if len(password) > 72 {
+		truncatedPassword = password[:72]
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(parts[0]), []byte(truncatedPassword+parts[1]))
 	return err == nil
 }
 

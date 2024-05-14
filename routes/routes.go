@@ -55,9 +55,28 @@ func RegisterRoutes(router *gin.Engine) {
 		// Send an email route
 		private.POST("/send-email", handlers.SendEmailHandler)
 
+		// Email Template routes
+		private.POST("/templates", handlers.CreateEmailTemplateHandler)
+		private.GET("/templates", handlers.GetEmailTemplatesHandler)
+		private.GET("/templates/:id", handlers.GetEmailTemplateHandler)
+		private.PUT("/templates/:id", handlers.UpdateEmailTemplateHandler)
+		private.DELETE("/templates/:id", handlers.DeleteEmailTemplateHandler)
+
 		// Settings routes
 		private.GET("/settings", handlers.GetSettingsHandler)
 		private.PUT("/settings", handlers.UpdateSettingsHandler)
+
+		// Admin routes
+		admin := router.Group("/api/v1/admin")
+		admin.Use(auth.AdminAuthMiddleware())
+		{
+			// User routes
+			admin.POST("/users", handlers.CreateUserHandler)
+			admin.GET("/users", handlers.GetUsersHandler)
+			admin.GET("/users/:id", handlers.GetUserHandler)
+			admin.PUT("/users/:id", handlers.UpdateUserHandler)
+			admin.DELETE("/users/:id", handlers.DeleteUserHandler)
+		}
 
 	}
 }
