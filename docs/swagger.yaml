@@ -1,0 +1,876 @@
+basePath: /api/v1
+definitions:
+  models.CampaignCustomer:
+    properties:
+      campaign_id:
+        type: integer
+      created_at:
+        type: string
+      customer_id:
+        type: integer
+      deleted_at:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      start_date:
+        type: string
+      status:
+        type: string
+      subscribed:
+        description: Added field to track subscription status
+        type: boolean
+      updated_at:
+        type: string
+    type: object
+  models.Customer:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      phone:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.DripCampaign:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      stages:
+        items:
+          $ref: '#/definitions/models.Stage'
+        type: array
+      start_date:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Settings:
+    properties:
+      created_at:
+        type: string
+      crm_api_key:
+        type: string
+      deleted_at:
+        type: string
+      email_polling_seconds:
+        type: integer
+      gmail_email:
+        type: string
+      gmail_password:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.Stage:
+    properties:
+      campaign_id:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+      steps:
+        items:
+          $ref: '#/definitions/models.Step'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  models.Step:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      description:
+        type: string
+      email_body:
+        type: string
+      email_subject:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      stage_id:
+        type: integer
+      updated_at:
+        type: string
+      wait_time:
+        type: integer
+    type: object
+  models.SuccessResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API documentation for the Drip Campaign application.
+  title: Drip Campaign API
+  version: "1.0"
+paths:
+  /campaign-customers:
+    get:
+      description: Retrieve all campaign customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CampaignCustomer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all campaign customers
+      tags:
+      - CampaignCustomers
+    post:
+      consumes:
+      - application/json
+      description: Create a new campaign customer
+      parameters:
+      - description: Campaign customer data
+        in: body
+        name: campaignCustomer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CampaignCustomer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CampaignCustomer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a campaign customer
+      tags:
+      - CampaignCustomers
+  /campaign-customers/{id}:
+    delete:
+      description: Delete a specific campaign customer by ID
+      parameters:
+      - description: Campaign customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a campaign customer
+      tags:
+      - CampaignCustomers
+    get:
+      description: Retrieve a specific campaign customer by ID
+      parameters:
+      - description: Campaign customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CampaignCustomer'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a campaign customer
+      tags:
+      - CampaignCustomers
+    put:
+      consumes:
+      - application/json
+      description: Update a specific campaign customer by ID
+      parameters:
+      - description: Campaign customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated campaign customer data
+        in: body
+        name: campaignCustomer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CampaignCustomer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CampaignCustomer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a campaign customer
+      tags:
+      - CampaignCustomers
+  /campaigns:
+    get:
+      description: Retrieve all drip campaigns
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DripCampaign'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all campaigns
+      tags:
+      - Campaigns
+    post:
+      consumes:
+      - application/json
+      description: Create a new drip campaign
+      parameters:
+      - description: Campaign data
+        in: body
+        name: campaign
+        required: true
+        schema:
+          $ref: '#/definitions/models.DripCampaign'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.DripCampaign'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a campaign
+      tags:
+      - Campaigns
+  /campaigns/{id}:
+    delete:
+      description: Delete a specific drip campaign by ID
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a campaign
+      tags:
+      - Campaigns
+    get:
+      description: Retrieve a specific drip campaign by ID
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DripCampaign'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a campaign
+      tags:
+      - Campaigns
+    put:
+      consumes:
+      - application/json
+      description: Update a specific drip campaign by ID
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated campaign data
+        in: body
+        name: campaign
+        required: true
+        schema:
+          $ref: '#/definitions/models.DripCampaign'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DripCampaign'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a campaign
+      tags:
+      - Campaigns
+  /customers:
+    get:
+      description: Retrieve all customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Customer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all customers
+      tags:
+      - Customers
+    post:
+      consumes:
+      - application/json
+      description: Create a new customer
+      parameters:
+      - description: Customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.Customer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a customer
+      tags:
+      - Customers
+  /customers/{id}:
+    delete:
+      description: Delete a specific customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a customer
+      tags:
+      - Customers
+    get:
+      description: Retrieve a specific customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a customer
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      description: Update a specific customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a customer
+      tags:
+      - Customers
+  /settings:
+    get:
+      description: Retrieve the user settings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Settings'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get settings
+      tags:
+      - Settings
+    put:
+      consumes:
+      - application/json
+      description: Update the user settings
+      parameters:
+      - description: Updated settings data
+        in: body
+        name: settings
+        required: true
+        schema:
+          $ref: '#/definitions/models.Settings'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Settings'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update settings
+      tags:
+      - Settings
+  /stages:
+    get:
+      description: Retrieve all stages
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Stage'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all stages
+      tags:
+      - Stages
+    post:
+      consumes:
+      - application/json
+      description: Create a new stage
+      parameters:
+      - description: Stage data
+        in: body
+        name: stage
+        required: true
+        schema:
+          $ref: '#/definitions/models.Stage'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Stage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a stage
+      tags:
+      - Stages
+  /stages/{id}:
+    delete:
+      description: Delete a specific stage by ID
+      parameters:
+      - description: Stage ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a stage
+      tags:
+      - Stages
+    get:
+      description: Retrieve a specific stage by ID
+      parameters:
+      - description: Stage ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Stage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a stage
+      tags:
+      - Stages
+    put:
+      consumes:
+      - application/json
+      description: Update a specific stage by ID
+      parameters:
+      - description: Stage ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated stage data
+        in: body
+        name: stage
+        required: true
+        schema:
+          $ref: '#/definitions/models.Stage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Stage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a stage
+      tags:
+      - Stages
+  /steps:
+    get:
+      description: Retrieve all steps
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Step'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get all steps
+      tags:
+      - Steps
+    post:
+      consumes:
+      - application/json
+      description: Create a new step
+      parameters:
+      - description: Step data
+        in: body
+        name: step
+        required: true
+        schema:
+          $ref: '#/definitions/models.Step'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Step'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a step
+      tags:
+      - Steps
+  /steps/{id}:
+    delete:
+      description: Delete a specific step by ID
+      parameters:
+      - description: Step ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a step
+      tags:
+      - Steps
+    get:
+      description: Retrieve a specific step by ID
+      parameters:
+      - description: Step ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Step'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a step
+      tags:
+      - Steps
+    put:
+      consumes:
+      - application/json
+      description: Update a specific step by ID
+      parameters:
+      - description: Step ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated step data
+        in: body
+        name: step
+        required: true
+        schema:
+          $ref: '#/definitions/models.Step'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Step'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a step
+      tags:
+      - Steps
+swagger: "2.0"

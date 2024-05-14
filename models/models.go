@@ -125,6 +125,10 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
+type SuccessResponse struct {
+	Message string `json:"message"`
+}
+
 // GetUserByEmail retrieves a user from the database based on the provided email
 func GetUserByEmail(email string) (*User, error) {
 	var user User
