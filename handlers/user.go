@@ -17,6 +17,9 @@ func CreateUserHandler(c *gin.Context) {
 		return
 	}
 
+	// Add user role
+	user.Role = models.UserRole
+
 	if err := database.DB.Create(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return

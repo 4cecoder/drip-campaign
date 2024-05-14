@@ -11,6 +11,7 @@ import (
 )
 
 const AdminRole = "admin"
+const UserRole = "user"
 
 type User struct {
 	Model
