@@ -82,14 +82,9 @@ func main() {
 }
 
 func CreateAdminUser(username, password string) error {
-	hashedPassword, err := models.HashPassword(password)
-	if err != nil {
-		return err
-	}
-
 	adminUser := models.User{
 		Email:    username,
-		Password: hashedPassword,
+		Password: password,
 		Role:     models.AdminRole,
 	}
 
