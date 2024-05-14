@@ -52,8 +52,12 @@ func RegisterRoutes(router *gin.Engine) {
 		private.PUT("/campaign-customers/:id", handlers.UpdateCampaignCustomerHandler)
 		private.DELETE("/campaign-customers/:id", handlers.DeleteCampaignCustomerHandler)
 
+		// Send an email route
+		private.POST("/send-email", handlers.SendEmailHandler)
+
 		// Settings routes
 		private.GET("/settings", handlers.GetSettingsHandler)
 		private.PUT("/settings", handlers.UpdateSettingsHandler)
+
 	}
 }

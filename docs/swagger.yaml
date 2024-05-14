@@ -68,9 +68,25 @@ definitions:
       updated_at:
         type: string
     type: object
+  models.EmailRequest:
+    properties:
+      body:
+        type: string
+      subject:
+        type: string
+      to:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       error:
+        type: string
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
         type: string
     type: object
   models.Settings:
@@ -143,6 +159,11 @@ definitions:
   models.SuccessResponse:
     properties:
       message:
+        type: string
+    type: object
+  models.TokenResponse:
+    properties:
+      token:
         type: string
     type: object
 host: localhost:8080
@@ -557,6 +578,66 @@ paths:
       summary: Update a customer
       tags:
       - Customers
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user credentials and generate a JWT token
+      parameters:
+      - description: User credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: User login
+      tags:
+      - Auth
+  /send-email:
+    post:
+      consumes:
+      - application/json
+      description: Send an email using Gmail SMTP with simple authentication
+      parameters:
+      - description: Email request data
+        in: body
+        name: emailRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.EmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Send an email
+      tags:
+      - Email
   /settings:
     get:
       description: Retrieve the user settings

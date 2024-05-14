@@ -1,13 +1,54 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/4cecoder/drip-campaign/auth"
 	"github.com/4cecoder/drip-campaign/database"
 	"net/http"
+	"net/smtp"
 	"strconv"
 
 	"github.com/4cecoder/drip-campaign/models"
 	"github.com/gin-gonic/gin"
 )
+
+// LoginHandler authenticates user credentials and generates a JWT token
+// @Summary User login
+// @Description Authenticate user credentials and generate a JWT token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param credentials body models.LoginRequest true "User credentials"
+// @Success 200 {object} models.TokenResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Router /login [post]
+func LoginHandler(c *gin.Context) {
+	var loginReq models.LoginRequest
+	if err := c.ShouldBindJSON(&loginReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := models.GetUserByEmail(loginReq.Email)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
+	if user == nil || !models.CheckPasswordHash(loginReq.Password, user.Password) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
+	token, err := auth.GenerateToken(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
+}
 
 // CreateCampaignHandler creates a new drip campaign
 // @Summary Create a campaign
@@ -674,4 +715,51 @@ func UpdateSettingsHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, settings)
+}
+
+// SendEmailHandler sends an email using Gmail SMTP with simple authentication
+// @Summary Send an email
+// @Description Send an email using Gmail SMTP with simple authentication
+// @Tags Email
+// @Accept json
+// @Produce json
+// @Param emailRequest body models.EmailRequest true "Email request data"
+// @Success 200 {object} models.SuccessResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /send-email [post]
+func SendEmailHandler(c *gin.Context) {
+	var emailRequest models.EmailRequest
+	if err := c.ShouldBindJSON(&emailRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	to := emailRequest.To
+	subject := emailRequest.Subject
+	body := emailRequest.Body
+
+	// Retrieve email settings from the database
+	var settings models.Settings
+	if err := database.DB.First(&settings).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve email settings"})
+		return
+	}
+
+	from := settings.GmailEmail
+	password := settings.GmailPassword
+
+	msg := []byte(fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s", from, to, subject, body))
+
+	smtpServer := "smtp.gmail.com"
+	smtpPort := "587"
+	authEmail := smtp.PlainAuth("", from, password, smtpServer)
+
+	err := smtp.SendMail(smtpServer+":"+smtpPort, authEmail, from, []string{to}, msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send email"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 }
