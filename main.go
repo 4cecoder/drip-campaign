@@ -8,6 +8,7 @@ import (
 	"github.com/4cecoder/drip-campaign/models"
 	"github.com/4cecoder/drip-campaign/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -29,7 +30,12 @@ func main() {
 
 	// Initialize the database connection
 	config.Init()
-	defer database.DB.Close()
+	defer func(DB *gorm.DB) {
+		err := DB.Close()
+		if err != nil {
+			log.Println("Error closing database connection:", err)
+		}
+	}(database.DB)
 
 	// Create a new Gin router
 	router := gin.Default()
@@ -84,6 +90,7 @@ func CreateAdminUser(username, password string) error {
 	adminUser := models.User{
 		Email:    username,
 		Password: hashedPassword,
+		Role:     models.AdminRole,
 	}
 
 	if err := database.DB.Create(&adminUser).Error; err != nil {
