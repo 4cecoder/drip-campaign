@@ -159,6 +159,53 @@ class API {
     async updateSettings(settingsData: any): Promise<AxiosResponse> {
         return this.instance.put('/settings', settingsData);
     }
+
+    // Send Email
+    async sendEmail(emailData: any): Promise<AxiosResponse> {
+        return this.instance.post('/send-email', emailData);
+    }
+
+    // Email Templates
+    async createEmailTemplate(emailTemplateData: any): Promise<AxiosResponse> {
+        return this.instance.post('/email-templates', emailTemplateData);
+    }
+
+    async getEmailTemplates(): Promise<AxiosResponse> {
+        return this.instance.get('/email-templates');
+    }
+
+    async getEmailTemplate(emailTemplateId: number): Promise<AxiosResponse> {
+        return this.instance.get(`/email-templates/${emailTemplateId}`);
+    }
+
+    async updateEmailTemplate(emailTemplateId: number, emailTemplateData: any): Promise<AxiosResponse> {
+        return this.instance.put(`/email-templates/${emailTemplateId}`, emailTemplateData);
+    }
+
+    async deleteEmailTemplate(emailTemplateId: number): Promise<AxiosResponse> {
+        return this.instance.delete(`/email-templates/${emailTemplateId}`);
+    }
+
+    // Admin Routes
+    async createUser(userData: any): Promise<AxiosResponse> {
+        return this.instance.post('/admin/users', userData);
+    }
+
+    async getUsers(): Promise<AxiosResponse> {
+        return this.instance.get('/admin/users');
+    }
+
+    async getUser(userId: number): Promise<AxiosResponse> {
+        return this.instance.get(`/admin/users/${userId}`);
+    }
+
+    async updateUser(userId: number, userData: any): Promise<AxiosResponse> {
+        return this.instance.put(`/admin/users/${userId}`, userData);
+    }
+
+    async deleteUser(userId: number): Promise<AxiosResponse> {
+        return this.instance.delete(`/admin/users/${userId}`);
+    }
 }
 
 export default new API();
