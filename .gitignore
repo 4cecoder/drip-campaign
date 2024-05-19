@@ -10,7 +10,6 @@
 .env
  package.json
  .idea
- .gitignore
 
 # Test binary, built with `go test -c`
 *.test
