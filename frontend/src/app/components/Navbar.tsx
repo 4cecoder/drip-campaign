@@ -29,7 +29,7 @@ export interface DocsSidebarNavProps {
                 <div className={"bg-gray-600 rounded-md flex justify-center w-10"}>
                     <Image src={"/logo.png"} className={""} height={20} width={20} alt={"Logo"}/>
                 </div>
-            <p className={"w-full m-0 p-0 text-sm ml-2"}> Drip Campaign </p>
+            <p className={"w-full m-0 p-0 text-sm ml-2"}> Drop Campaign </p>
                 </div>
             </div>
                {items.map((item, index) => (
