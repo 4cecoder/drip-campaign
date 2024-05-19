@@ -81,8 +81,8 @@ const initialStages: Stage[] = Object.entries(stageSteps).map(([stageName, stage
         steps: stageSteps.map((stageStep, index) => ({
             id: `${stageName}-${stepId++}`,
             name: stageStep,
-            emailSubject: emailTemplates[stageName][index].subject,
-            emailTemplate: emailTemplates[stageName][index].template,
+            emailSubject: emailTemplates[stageName as StageName][index].subject,
+            emailTemplate: emailTemplates[stageName as StageName][index].template,
             waitTime: 5,
         })),
     };
