@@ -69,6 +69,15 @@ The product is a web application aimed at managing sales campaigns and customer 
 
 - Represents a user with email and hashed password.
 
+- Creating a user by curl
+```bash
+# first do a login as admin to get the token
+curl -X POST http://localhost:8080/api/v1/auth/login -H "Content-Type: application/json" -d '{"email": admin", "password": "password"}'
+
+# then send a post request to the admin route `/api/v1/admin/users`
+curl -X POST http://localhost:8080/api/v1/admin/users -H "Content-Type: application json" -H "Authorization Bearer <token>" -d '{"email": "testuser", "password": "password"}'
+```
+
 ## Backend
 
 The backend is built with Golang using the Gin framework and Gorm for database interactions. It exposes RESTful API endpoints for managing drip campaigns, customers, email templates, and user authentication.
