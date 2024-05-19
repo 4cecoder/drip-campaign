@@ -7,7 +7,7 @@ export default function RootLayout({ children, }: Readonly<{
 }>) {
     const items =  [
         { title: "Home", disabled: false, href: "/", external: false, items: [], src:"/home.svg"},
-        { title: "Customers", disabled: false, href: "/customers", external: false, items: [], src:"customer.svg" },
+        { title: "Campaigns", disabled: false, href: "/campaigns", external: false, items: [], src:"customer.svg" },
         { title: "Emails", disabled: false, href: "/emails", external: false, items: [], src:"/email.svg" },
         { title: "Stages", disabled: false, href: "/stages", external: false, items: [], src:"/stage.svg" },
         { title: "Tasks", disabled: false, href: "/tasks", external: false, items: [], src:"/task.svg" },

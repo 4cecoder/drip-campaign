@@ -1,7 +1,7 @@
 // app/stages/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import EmailForm from "@/app/stages/EmailForm";
@@ -21,37 +21,91 @@ type Stage = {
     name: string;
     steps: Step[];
 };
+type StageName = 'leads' | 'consultation' | 'proposal' | 'scheduled' | 'signing' | 'install' | 'maintenance';
 
-const initialStages: Stage[] = [
-    {
-        id: '1',
-        name: 'Lead Generation',
-        steps: [
-            { id: '1', name: 'Attract', emailSubject: 'Exciting Offer', emailTemplate: '<p>Hello {{name}},</p><p>We have an exciting offer for you!</p>', waitTime: 5 },
-            { id: '2', name: 'Capture', emailSubject: 'Thank You', emailTemplate: '<p>Dear {{name}},</p><p>Thank you for your interest in our product.</p>', waitTime: 5 },
-            { id: '3', name: 'Nurture', emailSubject: 'Tips & Tricks', emailTemplate: '<p>Hi {{name}},</p><p>We hope you\'re enjoying our product. Here are some tips to get the most out of it.</p>', waitTime: 5 },
-        ],
-    },
-    {
-        id: '2',
-        name: 'Qualification',
-        steps: [
-            { id: '4', name: 'Identify', emailSubject: 'Potential Customer', emailTemplate: '<p>Hello {{name}},</p><p>We have identified you as a potential customer.</p>', waitTime: 5 },
-            { id: '5', name: 'Assess', emailSubject: 'Needs Assessment', emailTemplate: '<p>Dear {{name}},</p><p>We would like to assess your needs and see how we can assist you.</p>', waitTime: 5 },
-            { id: '6', name: 'Qualify', emailSubject: 'Product Fit', emailTemplate: '<p>Hi {{name}},</p><p>Based on our assessment, we believe our product is a great fit for you.</p>', waitTime: 5 },
-        ],
-    },
-];
+const stageSteps: Record<StageName, string[]> = {
+    leads: ['Identified', 'Contacted', 'Engaged'],
+    consultation: ['Initial Meeting', 'Follow-up', 'Final Review'],
+    proposal: ['Drafted', 'Sent', 'Revised'],
+    scheduled: ['Appointment Set', 'Reminder Sent', 'Completed'],
+    signing: ['Documents Prepared', 'Signing Underway', 'Signed'],
+    install: ['Scheduled', 'In Progress', 'Finalized'],
+    maintenance: ['Scheduled', 'In Progress', 'Completed']
+};
+const emailTemplates: Record<StageName, { subject: string; template: string; }[]> = {
+
+    leads: [
+        { subject: 'Introduction', template: 'Dear [Name], ...' },
+        { subject: 'Follow-up', template: 'Dear [Name], ...' },
+        { subject: 'Next Steps', template: 'Dear [Name], ...' },
+    ],
+    consultation: [
+        { subject: 'Meeting Confirmation', template: 'Dear [Name], ...' },
+        { subject: 'Follow-up Information', template: 'Dear [Name], ...' },
+        { subject: 'Final Review', template: 'Dear [Name], ...' },
+    ],
+    proposal: [
+        { subject: 'Proposal Draft', template: 'Dear [Name], ...' },
+        { subject: 'Proposal Sent', template: 'Dear [Name], ...' },
+        { subject: 'Revised Proposal', template: 'Dear [Name], ...' },
+    ],
+    scheduled: [
+        { subject: 'Appointment Confirmation', template: 'Dear [Name], ...' },
+        { subject: 'Appointment Reminder', template: 'Dear [Name], ...' },
+        { subject: 'Appointment Completed', template: 'Dear [Name], ...' },
+    ],
+    signing: [
+        { subject: 'Documents Ready', template: 'Dear [Name], ...' },
+        { subject: 'Signing In Progress', template: 'Dear [Name], ...' },
+        { subject: 'Signing Completed', template: 'Dear [Name], ...' },
+    ],
+    install: [
+        { subject: 'Installation Scheduled', template: 'Dear [Name], ...' },
+        { subject: 'Installation Progress', template: 'Dear [Name], ...' },
+        { subject: 'Installation Completed', template: 'Dear [Name], ...' },
+    ],
+    maintenance: [
+        { subject: 'Maintenance Scheduled', template: 'Dear [Name], ...' },
+        { subject: 'Maintenance Progress', template: 'Dear [Name], ...' },
+        { subject: 'Maintenance Completed', template: 'Dear [Name], ...' },
+    ],
+};
+
+let stageId = 1;
+let stepId = 1;
+
+const initialStages: Stage[] = Object.entries(stageSteps).map(([stageName, stageSteps]) => {
+    const stage: Stage = {
+        id: `${stageId++}`,
+        name: stageName.charAt(0).toUpperCase() + stageName.slice(1),
+        steps: stageSteps.map((stageStep, index) => ({
+            id: `${stageName}-${stepId++}`,
+            name: stageStep,
+            emailSubject: emailTemplates[stageName][index].subject,
+            emailTemplate: emailTemplates[stageName][index].template,
+            waitTime: 5,
+        })),
+    };
+    return stage;
+});
 
 const Stages: React.FC = () => {
-    const [stages, setStages] = useState<Stage[]>(() => {
-        const savedStages = localStorage.getItem('stages');
-        return savedStages ? JSON.parse(savedStages) : initialStages;
-    });
+    const [stages, setStages] = useState<Stage[]>(initialStages);
     const [newStageName, setNewStageName] = useState('');
     const [newStepName, setNewStepName] = useState('');
     const [selectedStage, setSelectedStage] = useState<Stage | null>(null);
     const [selectedStep, setSelectedStep] = useState<Step | null>(null);
+
+    useEffect(() => {
+        const savedStages = localStorage.getItem('stages');
+        if (savedStages) {
+            setStages(JSON.parse(savedStages));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('stages', JSON.stringify(stages));
+    }, [stages]);
 
     const addStage = () => {
         if (newStageName.trim() !== '') {

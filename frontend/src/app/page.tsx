@@ -23,11 +23,11 @@ export default function Home() {
                         <h2 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Features</h2>
                         <ul className="space-y-4">
                             <li>
-                                <Link href="/customers" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
+                                <Link href="/campaigns" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
                     <FontAwesomeIcon icon={faUsers} />
                   </span>
-                                    Customer Management
+                                    Campaign Management
                                 </Link>
                             </li>
                             <li>
@@ -86,10 +86,10 @@ export default function Home() {
                             Explore the power of our Email Drip Campaign Management System. Start by managing your customers and creating engaging campaigns.
                         </p>
                         <Link
-                            href="/customers"
+                            href="/campaigns"
                             className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200"
                         >
-                            Go to Customers
+                            Go to Campaigns
                         </Link>
                     </div>
                 </div>

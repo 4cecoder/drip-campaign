@@ -1,4 +1,4 @@
-// app/customers/page.tsx
+// app/campaigns/page.tsx
 'use client';
 
 import React from 'react';
@@ -49,7 +49,7 @@ const demoAssignedCustomers: Customer[] = [
         stage: 'consultation',
         inCampaign: true,
     },
-    // Add more demo assigned customers
+    // Add more demo assigned campaigns
 ];
 
 const demoUnassignedCustomers: Customer[] = [
@@ -69,7 +69,7 @@ const demoUnassignedCustomers: Customer[] = [
         stage: '',
         inCampaign: false,
     },
-    // Add more demo unassigned customers
+    // Add more demo unassigned campaigns
 ];
 
 const CustomerManagement: React.FC = () => {
