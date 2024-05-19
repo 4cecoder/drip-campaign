@@ -184,7 +184,6 @@ const Stages: React.FC = () => {
                         : stage
                 )
             );
-            localStorage.setItem('stages', JSON.stringify(stages));
         }
     };
 
