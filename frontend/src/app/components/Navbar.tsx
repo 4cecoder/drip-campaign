@@ -1,84 +1,90 @@
-// components/Navbar.tsx
-'use client';
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faHome,
-    faEnvelope,
-    faUsers,
-    faTasks,
-    faEnvelopeCircleCheck,
-    faCogs, faBarsProgress,
-} from "@fortawesome/free-solid-svg-icons";
+"use client"
 
-const Navbar: React.FC = () => {
-    const pathname = usePathname();
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
-    return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-gray-900 bg-opacity-50 shadow-md backdrop-filter backdrop-blur-lg border-t border-gray-700">
-            <div className="container mx-auto px-4">
-                <div className="flex justify-around items-center py-4">
-                    <Link href="/">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faHome} className="text-2xl" />
-                            <span className="text-xs mt-1">Home</span>
-                        </div>
-                    </Link>
-                    <Link href="/customers">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/customers" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faUsers} className="text-2xl" />
-                            <span className="text-xs mt-1">Customers</span>
-                        </div>
-                    </Link>
-                    <Link href="/emails">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/emails" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faEnvelope} className="text-2xl" />
-                            <span className="text-xs mt-1">Emails</span>
-                        </div>
-                    </Link>
-                    <Link href="/stages">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/stages" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faBarsProgress} className="text-2xl" />
-                            <span className="text-xs mt-1">Stages</span>
-                        </div>
-                    </Link>
-                    <Link href="/tasks">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/tasks" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faTasks} className="text-2xl" />
-                            <span className="text-xs mt-1">Tasks</span>
-                        </div>
-                    </Link>
-                    <Link href="/subscriptions">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/subscriptions" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faEnvelopeCircleCheck} className="text-2xl" />
-                            <span className="text-xs mt-1">Subscriptions</span>
-                        </div>
-                    </Link>
-                    <Link href="/settings">
-                        <div className={`flex flex-col items-center ${
-                            pathname === "/settings" ? "text-blue-500" : "text-white"
-                        }`}>
-                            <FontAwesomeIcon icon={faCogs} className="text-2xl" />
-                            <span className="text-xs mt-1">Settings</span>
-                        </div>
-                    </Link>
+import { cn } from "@/lib/utils"
+import Image from "next/image";
+
+interface SidebarNavItem {
+    title: string,
+    disabled: boolean,
+    href: string,
+    external: boolean,
+    src:string,
+    items:SidebarNavItem[]
+}
+
+export interface DocsSidebarNavProps {
+    items: SidebarNavItem[]
+}
+
+ function Navbar({ items }: DocsSidebarNavProps) {
+    const pathname = usePathname()
+
+    return items.length ? (
+        <div className="w-56 bg-gray-800 text-white">
+            <div className={"logo flex w-full p-2  items-center"}>
+                <div className={"border-[1px] rounded-md p-[2px] flex items-center border-blue-400"}>
+                <div className={"bg-gray-600 rounded-md flex justify-center w-10"}>
+                    <Image src={"/logo.png"} className={""} height={20} width={20} alt={"Logo"}/>
+                </div>
+            <p className={"w-full m-0 p-0 text-sm ml-2"}> Drip Campaign </p>
                 </div>
             </div>
-        </nav>
-    );
-};
+               {items.map((item, index) => (
+                <Link href={item.href} key={index} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+                    <div  className={"flex ml-3"}>
+                        <Image src={item?.src} className={""} height={20} width={20} alt={"Logo"}/>
+                        <h4 className="select-none rounded-md px-2 text-sm  font-medium">
+                            {item.title}
+                        </h4>
+                    </div>
 
-export default Navbar;
+                    {item.items ? (
+                        <DocsSidebarNavItems items={item.items} pathname={pathname} />
+                    ) : null}
+                </Link>
+            ))}
+        </div>
+    ) : null
+}
+
+
+
+interface DocsSidebarNavItemsProps {
+    items: SidebarNavItem[]
+    pathname: string | null
+}
+
+export function DocsSidebarNavItems({
+                                        items,
+                                        pathname,
+                                    }: DocsSidebarNavItemsProps) {
+    return items?.length ? (
+        <div className="grid grid-flow-row auto-rows-max text-sm">
+            {items.map((item, index) =>
+                    !item.disabled && item.href ? (
+                        <Link
+                            key={index}
+                            href={item.href}
+                            className={cn(
+                                "flex w-full items-center rounded-md p-2 hover:underline",
+                                {
+                                    "bg-muted": pathname === item.href,
+                                }
+                            )}
+                            target={item.external ? "_blank" : ""}
+                            rel={item.external ? "noreferrer" : ""}
+                        >
+                            {item.title}
+                        </Link>
+                    ) : (
+                        <span key={Math.random()} className="flex w-full cursor-not-allowed items-center rounded-md p-2 opacity-60">{item.title}</span>
+                    )
+            )}
+        </div>
+    ) : null
+}
+
+export default Navbar

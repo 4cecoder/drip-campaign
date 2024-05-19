@@ -99,7 +99,7 @@ const CustomerManagement: React.FC = () => {
     };
 
     return (
-        <div className="bg-black min-h-screen text-white px-4 py-8">
+        <div className="bg-gray-900 min-h-screen text-white px-4 py-8">
             <div className="container mx-auto">
                 <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
                     Drip Campaign Management
