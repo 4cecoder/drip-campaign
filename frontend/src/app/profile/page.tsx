@@ -11,6 +11,13 @@ const BusinessProfilePage = () => {
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [website, setWebsite] = useState('');
+    const [logo, setLogo] = useState<File | null>(null);
+    const [primaryColor, setPrimaryColor] = useState('#000000');
+    const [secondaryColor, setSecondaryColor] = useState('#000000');
+    const [gradientStart, setGradientStart] = useState('#000000');
+    const [gradientEnd, setGradientEnd] = useState('#000000');
+    const [products, setProducts] = useState('');
+    const [missionStatement, setMissionStatement] = useState('');
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -40,8 +47,23 @@ const BusinessProfilePage = () => {
         fetchData();
     }, []);
 
+    const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setLogo(e.target.files[0]);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        // TODO: Handle form submission, including uploading the logo and setting the colors
+        // For now, we'll just log the values
+        console.log('Logo:', logo);
+        console.log('Primary Color:', primaryColor);
+        console.log('Secondary Color:', secondaryColor);
+        console.log('Gradient Start:', gradientStart);
+        console.log('Gradient End:', gradientEnd);
+        console.log('Products:', products);
+        console.log('Mission Statement:', missionStatement);
         // Simulating form submission with fake demo data
         console.log('Updated Business Profile:', {
             businessName,
@@ -61,13 +83,13 @@ const BusinessProfilePage = () => {
 
     return (
         <div className="bg-gray-900 min-h-screen text-white px-4 py-8">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-4xl mx-auto">
                 <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
                     Business Profile
                 </h1>
                 {isEditing ? (
-                    <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
-                        <div>
+                    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
                             <label htmlFor="businessName" className="block mb-2 font-bold">
                                 Business Name:
                             </label>
@@ -80,7 +102,7 @@ const BusinessProfilePage = () => {
                                 className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-                        <div>
+                        <div className="md:col-span-2">
                             <label htmlFor="description" className="block mb-2 font-bold">
                                 Description:
                             </label>
@@ -143,33 +165,123 @@ const BusinessProfilePage = () => {
                                 className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-                        <button
-                            type="submit"
-                            className="px-6 py-3 mt-6 font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            Save Profile
-                        </button>
+                        <div className="md:col-span-2">
+                            <label htmlFor="logo" className="block mb-2 font-bold">
+                                Logo:
+                            </label>
+                            <input
+                                type="file"
+                                id="logo"
+                                accept="image/*"
+                                onChange={handleLogoChange}
+                                className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label htmlFor="products" className="block mb-2 font-bold">
+                                Products:
+                            </label>
+                            <textarea
+                                id="products"
+                                value={products}
+                                onChange={(e) => setProducts(e.target.value)}
+                                className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label htmlFor="missionStatement" className="block mb-2 font-bold">
+                                Mission Statement:
+                            </label>
+                            <textarea
+                                id="missionStatement"
+                                value={missionStatement}
+                                onChange={(e) => setMissionStatement(e.target.value)}
+                                className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <h3 className="text-xl font-bold mb-4">Color Scheme</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="primaryColor" className="block mb-2 font-bold">
+                                        Primary Color:
+                                    </label>
+                                    <input
+                                        type="color"
+                                        id="primaryColor"
+                                        value={primaryColor}
+                                        onChange={(e) => setPrimaryColor(e.target.value)}
+                                        className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="secondaryColor" className="block mb-2 font-bold">
+                                        Secondary Color:
+                                    </label>
+                                    <input
+                                        type="color"
+                                        id="secondaryColor"
+                                        value={secondaryColor}
+                                        onChange={(e) => setSecondaryColor(e.target.value)}
+                                        className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="gradientStart" className="block mb-2 font-bold">
+                                        Gradient Start:
+                                    </label>
+                                    <input
+                                        type="color"
+                                        id="gradientStart"
+                                        value={gradientStart}
+                                        onChange={(e) => setGradientStart(e.target.value)}
+                                        className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="gradientEnd" className="block mb-2 font-bold">
+                                        Gradient End:
+                                    </label>
+                                    <input
+                                        type="color"
+                                        id="gradientEnd"
+                                        value={gradientEnd}
+                                        onChange={(e) => setGradientEnd(e.target.value)}
+                                        className="w-full px-4 py-2 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <button
+                                type="submit"
+                                className="px-6 py-3 mt-6 font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                Save Profile
+                            </button>
+                        </div>
                     </form>
                 ) : (
                     <div className="bg-gray-800 rounded-lg shadow-lg p-8">
-                        <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-3xl font-bold">{businessName}</h2>
+                        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+                            <h2 className="text-3xl font-bold mb-4 md:mb-0">{businessName}</h2>
                             <button
                                 onClick={() => setIsEditing(true)}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <FontAwesomeIcon icon={faPencilAlt} className="mr-2" />
+                                <FontAwesomeIcon icon={faPencilAlt} className="mr-2"/>
                                 Edit Profile
                             </button>
                         </div>
-                        <p className="text-lg mb-4">{description}</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <p className="text-lg mb-8">{description}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h3 className="text-xl font-bold mb-2">Contact Information</h3>
-                                <p>
+                                <h3 className="text-xl font-bold mb-4">Contact Information</h3>
+                                <p className="mb-2">
                                     <strong>Address:</strong> {address}
                                 </p>
-                                <p>
+                                <p className="mb-2">
                                     <strong>Phone:</strong> {phone}
                                 </p>
                                 <p>
@@ -177,7 +289,7 @@ const BusinessProfilePage = () => {
                                 </p>
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold mb-2">Website</h3>
+                                <h3 className="text-xl font-bold mb-4">Website</h3>
                                 <a
                                     href={website}
                                     target="_blank"
