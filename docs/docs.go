@@ -14,7 +14,6 @@ const docTemplate = `{
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
-    "basePath": "{{.BasePath}}",
     "paths": {
         "/campaign-customers": {
             "get": {
