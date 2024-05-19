@@ -54,7 +54,7 @@
 //                     <ul className="space-y-4">
 //                         {[
 //                             { to: '/', icon: faHome, text: 'Home' },
-//                             { to: '/customers', icon: faUsers, text: 'Customers' },
+//                             { to: '/campaigns', icon: faUsers, text: 'Customers' },
 //                             { to: '/emails', icon: faEnvelope, text: 'Emails' },
 //                             { to: '/stages', icon: faBarsProgress, text: 'Stages' },
 //                             { to: '/tasks', icon: faTasks, text: 'Tasks' },

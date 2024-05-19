@@ -1,3 +1,5 @@
+// app/tasks/page.tsx
+
 'use client';
 
 import React, { useState } from 'react';
@@ -34,10 +36,24 @@ const initialTasks: Task[] = [
         customerName: 'Gordon Freeman',
         completed: false,
     },
-    // More fake tasks
+    {
+        id: 2,
+        content: 'Schedule meeting with HVAC supplier',
+        dueDate: '2023-09-20',
+        dueTime: '10:30',
+        createdDate: '2023-09-05',
+        userId: 102,
+        userName: 'Jim Raynor',
+        creatorId: 202,
+        creatorName: 'Nova Terra',
+        customerId: 302,
+        customerName: 'Alyx Vance',
+        completed: false,
+    },
+    // Add more fake tasks as needed
 ];
 
-const tasks: React.FC = () => {
+const Tasks = () => {
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
     const toggleTaskCompletion = (id: number) => {
@@ -86,4 +102,4 @@ const tasks: React.FC = () => {
     );
 };
 
-export default tasks;
+export default Tasks;
