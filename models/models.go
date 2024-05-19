@@ -1,13 +1,6 @@
 package models
 
 import (
-	"crypto/rand"
-	"encoding/base64"
-	"github.com/4cecoder/drip-campaign/database"
-	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
-	"log"
-	"strings"
 	"time"
 )
 
@@ -39,12 +32,12 @@ type Stage struct {
 
 type Step struct {
 	Model
-	StageID      uint   `json:"stage_id"`
-	Name         string `json:"name"`
-	Description  string `json:"description"`
-	EmailSubject string `json:"email_subject"`
-	EmailBody    string `json:"email_body"`
-	WaitTime     int    `json:"wait_time"`
+	StageID         uint           `json:"stage_id"`
+	Name            string         `json:"name"`
+	Description     string         `json:"description"`
+	EmailTemplateID uint           `json:"email_template_id"`
+	EmailTemplate   *EmailTemplate `json:"email_template,omitempty" gorm:"foreignkey:EmailTemplateID"`
+	WaitTime        int            `json:"wait_time"`
 }
 
 type Customer struct {
@@ -70,7 +63,7 @@ type EmailTemplate struct {
 	Name        string `json:"name"`
 	Subject     string `json:"subject"`
 	Body        string `json:"body"`
-	ContentType string `json:"content_type"`
+	ContentType string `json:"content_type" description:"Specifies the content type of the email body. Valid values are 'text/plain' for plain text emails and 'text/html' for HTML emails."`
 }
 
 type EmailLog struct {
@@ -93,30 +86,6 @@ type Settings struct {
 	EmailPollingSeconds int    `json:"email_polling_seconds"`
 }
 
-type User struct {
-	Model
-	Email    string `gorm:"unique;not null"`
-	Password string `gorm:"not null"`
-}
-
-func (u *User) BeforeCreate(tx *gorm.DB) error {
-	hashedPassword, err := HashPassword(u.Password)
-	if err != nil {
-		return err
-	}
-	u.Password = hashedPassword
-	return nil
-}
-
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-type LoginUser struct {
-	Email string `json:"email"`
-	Role  string `json:"role"`
-}
-
 type TokenResponse struct {
 	Token string `json:"token"`
 }
@@ -125,40 +94,12 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-// GetUserByEmail retrieves a user from the database based on the provided email
-func GetUserByEmail(email string) (*User, error) {
-	var user User
-	if err := database.DB.Where("email = ?", email).First(&user).Error; err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			return nil, nil // User not found
-		}
-		return nil, err // Other database error
-	}
-	return &user, nil
+type SuccessResponse struct {
+	Message string `json:"message"`
 }
 
-func HashPassword(password string) (string, error) {
-	salt := GenerateSalt()
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password+salt), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hashedPassword) + ":" + salt, nil
-}
-
-func CheckPasswordHash(password, hashedPassword string) bool {
-	parts := strings.Split(hashedPassword, ":")
-	if len(parts) != 2 {
-		return false
-	}
-	err := bcrypt.CompareHashAndPassword([]byte(parts[0]), []byte(password+parts[1]))
-	return err == nil
-}
-
-func GenerateSalt() string {
-	salt := make([]byte, 16)
-	if _, err := rand.Read(salt); err != nil {
-		log.Fatal(err)
-	}
-	return base64.StdEncoding.EncodeToString(salt)
+type EmailRequest struct {
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
 }

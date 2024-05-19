@@ -41,6 +41,12 @@ func Init() {
 		&models.DripCampaign{},
 		&models.Stage{},
 		&models.Step{},
+		&models.EmailTemplate{},
+		&models.Customer{},
+		&models.CampaignCustomer{},
+		&models.Settings{},
+		&models.EmailLog{},
+
 		// Add other models here
 	)
 

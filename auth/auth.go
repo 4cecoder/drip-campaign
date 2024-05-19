@@ -20,6 +20,14 @@ func GenerateToken(user *models.User) (string, error) {
 	return token.SignedString(jwtKey)
 }
 
+func GenerateAdminToken(user *models.User) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":   user.ID,
+		"role": "admin",
+	})
+	return token.SignedString(jwtKey)
+}
+
 func VerifyToken(c *gin.Context) (string, error) {
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
