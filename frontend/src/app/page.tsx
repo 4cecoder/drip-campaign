@@ -1,11 +1,10 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faUsers,
     faEnvelope,
     faTasks,
-    faStream,
     faBarsProgress,
     faCogs,
 } from "@fortawesome/free-solid-svg-icons";
