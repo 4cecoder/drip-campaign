@@ -2,6 +2,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import {post} from "@/app/util/api";
+import withAuth from "@/app/util/withAuth";
+import {redirect} from "next/navigation";
 
 const testUsers = [
     { username: 'testuser', password: 'testpassword' },
@@ -14,19 +17,17 @@ const Login: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async(event: React.FormEvent) => {
         event.preventDefault();
-
-        const user = testUsers.find(
-            (u) => u.username === username && u.password === password
-        );
-
-        if (user) {
-            setIsAuthenticated(true);
-            setErrorMessage('');
-        } else {
-            setIsAuthenticated(false);
-            setErrorMessage('Invalid username or password');
+        try {
+            let res = await post("login", {
+                email: username,
+                password: password
+            })
+            window.localStorage.setItem("token",res.data.token);
+           window.location.replace("/")
+        } catch (e) {
+           console.error(e)
         }
     };
 
@@ -90,4 +91,4 @@ const Login: React.FC = () => {
     );
 };
 
-export default Login;
+export default withAuth(Login, true);

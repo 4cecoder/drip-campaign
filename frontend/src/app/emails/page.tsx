@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import withAuth from "@/app/util/withAuth";
 
 type EmailStatus = 'Sent' | 'Delivered' | 'Opened' | 'Clicked' | 'Unsubscribed';
 type CampaignStage = 'Lead Generation' | 'Qualification' | 'Proposal' | 'Scheduled' | 'Signing' | 'Install' | 'Maintenance';
@@ -90,4 +91,4 @@ const EmailTracking: React.FC = () => {
     );
 };
 
-export default EmailTracking;
+export default  withAuth(EmailTracking);

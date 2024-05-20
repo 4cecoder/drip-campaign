@@ -7,6 +7,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import EmailForm from "@/app/stages/EmailForm";
 import StageComponent from "@/app/stages/Stage";
 import WaitTimeInput from "@/app/stages/WaitTimeInput";
+import withAuth from "@/app/util/withAuth";
 
 type Step = {
     id: string;
@@ -33,7 +34,6 @@ const stageSteps: Record<StageName, string[]> = {
     maintenance: ['Scheduled', 'In Progress', 'Completed']
 };
 const emailTemplates: Record<StageName, { subject: string; template: string; }[]> = {
-
     leads: [
         { subject: 'Introduction', template: 'Dear [Name], ...' },
         { subject: 'Follow-up', template: 'Dear [Name], ...' },
@@ -247,4 +247,4 @@ const Stages: React.FC = () => {
     );
 };
 
-export default Stages;
+export default withAuth(Stages);

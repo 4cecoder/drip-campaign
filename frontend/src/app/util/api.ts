@@ -10,33 +10,17 @@ const axiosWithAuth = () => {
 }
 
 export const get = (url: string) => {
-    axiosWithAuth().get(url).then(res => {
-        return res;
-    }).catch(err => {
-        console.error(err)
-    })
+   return axiosWithAuth().get(url);
 }
 
 export const post = (url: string, form:any) => {
-    axiosWithAuth().post(url,{form}).then(res => {
-        return res;
-    }).catch(err => {
-        console.error(err)
-    })
+    return axiosWithAuth().post(url,form)
 }
 
 export const put = (url: string, form:any) => {
-    axiosWithAuth().put(url,{form}).then(res => {
-        return res;
-    }).catch(err => {
-        console.error(err)
-    })
+  return axiosWithAuth().put(url,{form})
 }
 
 export const del = (url: string) => {
-    axiosWithAuth().delete(url).then(res => {
-        return res;
-    }).catch(err => {
-        console.error(err)
-    })
+    return axiosWithAuth().delete(url);
 }
