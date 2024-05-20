@@ -4,6 +4,7 @@
 import React, {useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
+import withAuth from "@/app/util/withAuth";
 
 type CRM = 'Enerflo' | 'HubSpot' | 'Salesforce';
 
@@ -145,4 +146,4 @@ const Settings: React.FC = () => {
     );
 };
 
-export default Settings;
+export default withAuth(Settings);

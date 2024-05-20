@@ -7,6 +7,7 @@ import {faPlay, faPause, faEnvelope, faArrowRight, faArrowLeft} from '@fortaweso
 import { Customer, StagePoints } from './types';
 import Link from "next/link";
 import {faFileImport} from "@fortawesome/free-solid-svg-icons/faFileImport";
+import withAuth from "@/app/util/withAuth";
 const stagePoints: StagePoints = {
     leads: ['Identified', 'Contacted', 'Engaged'],
     consultation: ['Initial Meeting', 'Follow-up', 'Final Review'],
@@ -104,7 +105,7 @@ const CustomerManagement: React.FC = () => {
                 <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
                     Drip Campaign Management
                 </h1>
-                <Link href="/import">
+                <Link href={"/imports"}>
                     <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 mb-4">
                         <FontAwesomeIcon icon={faFileImport} className="mr-2" />
                         Import Customers
@@ -222,4 +223,4 @@ const UnassignedCustomerCard: React.FC<UnassignedCustomerCardProps> = ({ custome
     </div>
 );
 
-export default CustomerManagement;
+export default withAuth(CustomerManagement);

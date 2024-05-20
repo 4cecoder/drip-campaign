@@ -46,6 +46,23 @@ export interface DocsSidebarNavProps {
                     ) : null}
                 </Link>
             ))}
+            {window.localStorage.getItem("token")?
+                <Link onClick={()=> window.localStorage.setItem("token","")} href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+                <div className={"flex ml-3"}>
+                    <Image src={"/setting.svg"} className={""} height={20} width={20} alt={"Logo"}/>
+                    <h4 className="select-none rounded-md px-2 text-sm  font-medium">
+                       Logout
+                    </h4>
+                </div>
+            </Link>: <Link href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+                    <div  className={"flex ml-3"}>
+                        <Image src={"/setting.svg"} className={""} height={20} width={20} alt={"Logo"}/>
+                        <h4 className="select-none rounded-md px-2 text-sm  font-medium">
+                           Login
+                        </h4>
+                    </div>
+                </Link>
+            }
         </div>
     ) : null
 }

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPlusCircle, faCheckCircle, faTimesCircle, faSave } from '@fortawesome/free-solid-svg-icons';
+import withAuth from "@/app/util/withAuth";
 
 const Subscriptions: React.FC = () => {
     const [emailSubscriptions, setEmailSubscriptions] = useState([
@@ -120,4 +121,4 @@ const Subscriptions: React.FC = () => {
     );
 };
 
-export default Subscriptions;
+export default withAuth(Subscriptions);

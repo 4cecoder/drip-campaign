@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
+import withAuth from "@/app/util/withAuth";
 
 const EmailUnsubscribe: React.FC = () => {
     const searchParams = useSearchParams();
@@ -62,4 +63,4 @@ const EmailUnsubscribe: React.FC = () => {
     );
 };
 
-export default EmailUnsubscribe;
+export default withAuth(EmailUnsubscribe);
