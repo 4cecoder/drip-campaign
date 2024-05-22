@@ -1,9 +1,22 @@
 // app/campaigns/campaignUtils.ts
 
 import { Endpoints } from '@/lib/endpoints';
-import { Customer} from './types';
 import { del, get, post, put } from '../util/api';
+export type Customer = {
+    campaign_id: string;
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    stage: string;
+    stagePoint?: string;
+    inCampaign: boolean;
+    campaignCustomerId?: number;
+};
 
+export type StagePoints = {
+    [key: string]: string[];
+};
 export const updateCustomerStage = async (customerId: string, newStage: string): Promise<void> => {
     try {
         await put(Endpoints.updateCustomer(customerId), { stage: newStage });

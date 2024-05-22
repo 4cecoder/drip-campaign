@@ -33,7 +33,7 @@ export const Endpoints = {
     getCustomers: `${API_BASE_URL}/customers`,
     getCustomer: (id: number) => `${API_BASE_URL}/customers/${id}`,
     updateCustomer: (id: string) => `${API_BASE_URL}/customers/${id}`,
-    deleteCustomer: (id: number) => `${API_BASE_URL}/customers/${id}`,
+    deleteCustomer: (id: string) => `${API_BASE_URL}/customers/${id}`,
 
     // Campaign Customers
     createCampaignCustomer: `${API_BASE_URL}/campaign-customers`,

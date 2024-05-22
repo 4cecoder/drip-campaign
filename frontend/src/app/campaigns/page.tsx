@@ -3,11 +3,19 @@
 
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faPause, faEnvelope, faArrowRight, faArrowLeft, faFileImport } from '@fortawesome/free-solid-svg-icons';
-import { Customer } from './types';
+import {
+    faPlay,
+    faPause,
+    faEnvelope,
+    faArrowRight,
+    faArrowLeft,
+    faFileImport,
+    faPeopleRoof
+} from '@fortawesome/free-solid-svg-icons';
 import Link from "next/link";
 import withAuth from "@/app/util/withAuth";
 import {
+    Customer,
     updateCustomerStage,
     updateCustomerStagePoint,
     toggleCustomerCampaignStatus,
@@ -86,6 +94,12 @@ const CustomerManagement: React.FC = () => {
                     <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 mb-4">
                         <FontAwesomeIcon icon={faFileImport} className="mr-2" />
                         Import Customers
+                    </button>
+                </Link>
+                <Link href={"/customers"}>
+                    <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 ml-2 mb-4">
+                        <FontAwesomeIcon icon={faPeopleRoof} className="mr-2" />
+                        Manage Customers
                     </button>
                 </Link>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
