@@ -1,35 +1,30 @@
-// app/stages/WaitTimeInput.tsx
-import React from 'react';
-
-type Step = {
-    id: string;
-    name: string;
-    emailSubject: string;
-    emailTemplate: string;
-    waitTime: number;
-};
+// WaitTimeInput.tsx
+import React, { useState } from 'react';
 
 type WaitTimeInputProps = {
     selectedStep: Step;
-    setSelectedStep: (step: Step) => void;
+    updateWaitTime: (stepId: number, waitTime: number) => void;
 };
 
-const WaitTimeInput: React.FC<WaitTimeInputProps> = ({ selectedStep, setSelectedStep }) => {
+const WaitTimeInput: React.FC<WaitTimeInputProps> = ({ selectedStep, updateWaitTime }) => {
+    const [waitTime, setWaitTime] = useState(selectedStep.wait_time);
+
+    const handleWaitTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newWaitTime = parseInt(event.target.value, 10);
+        setWaitTime(newWaitTime);
+        updateWaitTime(selectedStep.id, newWaitTime);
+    };
+
     return (
-        <div className="mb-4">
-            <label htmlFor="waitTime" className="block mb-2 mt-6">
-                Wait Time (days):
+        <div className="mt-4">
+            <label htmlFor="waitTime" className="block mb-2">
+                Wait Time (seconds):
             </label>
             <input
                 type="number"
                 id="waitTime"
-                value={selectedStep.waitTime}
-                onChange={(e) =>
-                    setSelectedStep({
-                        ...selectedStep,
-                        waitTime: parseInt(e.target.value),
-                    })
-                }
+                value={waitTime}
+                onChange={handleWaitTimeChange}
                 className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
         </div>

@@ -1,5 +1,4 @@
 // src/app/util/globalTypes.ts
-
 declare global {
     interface Model {
         id: number;
@@ -22,7 +21,7 @@ declare global {
         name: string;
         description: string;
         order: number;
-        steps: Step[];
+        steps: Step[] | null;
     }
 
     interface Step extends Model {
@@ -34,32 +33,12 @@ declare global {
         wait_time: number;
     }
 
-    export type Customer = {
-        id: number;
+    interface Customer extends Model {
         email: string;
-        firstName: string;
-        lastName: string;
+        first_name: string;
+        last_name: string;
         phone: string;
-        company: string;
-        address: string;
-        city: string;
-        state: string;
-        country: string;
-        postalCode: string;
-        notes: string;
-        tags: string;
-        emailVerified: boolean;
-        subscribed: boolean;
-        lastContacted: string;
-        leadSource: string;
-        leadStatus: string;
-        createdBy: number;
-        assignedTo: number;
-        stage: string;
-        stagePoint?: string;
-        inCampaign: boolean;
-        campaignCustomerId?: number;
-    };
+    }
 
     interface EmailTemplate extends Model {
         name: string;

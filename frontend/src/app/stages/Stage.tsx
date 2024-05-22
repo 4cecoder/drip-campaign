@@ -1,29 +1,14 @@
-// app/stages/Stage.tsx
+// Stage.tsx
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import withAuth from "@/app/util/withAuth";
-
-type Step = {
-    id: string;
-    name: string;
-    emailSubject: string;
-    emailTemplate: string;
-    waitTime: number;
-};
-
-type Stage = {
-    id: string;
-    name: string;
-    steps: Step[];
-};
 
 type StageProps = {
     stage: Stage;
-    updateStageName: (stageId: string, newName: string) => void;
-    deleteStage: (stageId: string) => void;
-    addStep: (stageId: string) => void;
-    deleteStep: (stageId: string, stepId: string) => void;
+    updateStageName: (stageId: number, newName: string) => void;
+    deleteStage: (stageId: number) => void;
+    addStep: (stageId: number) => void;
+    deleteStep: (stageId: number, stepId: number) => void;
     setSelectedStage: (stage: Stage) => void;
     setSelectedStep: (step: Step) => void;
     newStepName: string;
@@ -57,7 +42,7 @@ const Stage: React.FC<StageProps> = ({
                 />
             </div>
             <ul className="ml-6 list-disc">
-                {stage.steps.map((step) => (
+                {stage.steps?.map((step) => (
                     <li
                         key={step.id}
                         className="mb-2 flex items-center cursor-pointer"

@@ -1,28 +1,68 @@
-// app/stages/EmailForm.tsx
-import React from 'react';
+// EmailForm.tsx
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import DOMPurify from 'dompurify';
-
-type Step = {
-    id: string;
-    name: string;
-    emailSubject: string;
-    emailTemplate: string;
-    waitTime: number;
-};
+import { fetchEmailTemplate, updateEmailTemplate } from './stagesUtils';
 
 type EmailFormProps = {
     selectedStep: Step;
-    setSelectedStep: (step: Step) => void;
-    saveEmailSubjectAndTemplate: () => void;
+    createEmailTemplate: (stepId: number) => Promise<void>;
 };
 
-const EmailForm: React.FC<EmailFormProps> = ({
-                                                 selectedStep,
-                                                 setSelectedStep,
-                                                 saveEmailSubjectAndTemplate,
-                                             }) => {
+const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate }) => {
+    const [emailTemplate, setEmailTemplate] = useState<EmailTemplate>({
+        id: 0,
+        name: '',
+        subject: '',
+        body: '',
+        content_type: '',
+        created_at: '',
+        updated_at: '',
+        deleted_at: null,
+    });
+
+    useEffect(() => {
+        const fetchTemplate = async () => {
+            if (selectedStep.email_template_id) {
+                try {
+                    const template = await fetchEmailTemplate(selectedStep.email_template_id);
+                    setEmailTemplate(template);
+                } catch (error) {
+                    console.error('Error fetching email template:', error);
+                }
+            } else {
+                setEmailTemplate({
+                    id: 0,
+                    name: '',
+                    subject: '',
+                    body: '',
+                    content_type: '',
+                    created_at: '',
+                    updated_at: '',
+                    deleted_at: null,
+                });
+            }
+        };
+
+        fetchTemplate();
+    }, [selectedStep.email_template_id]);
+
+    const handleSaveEmailTemplate = async () => {
+        try {
+            if (selectedStep.email_template_id) {
+                await updateEmailTemplate(selectedStep.email_template_id, emailTemplate);
+                console.log('Email template updated successfully');
+            } else {
+                const newEmailTemplate = await createEmailTemplate(selectedStep.id);
+                setEmailTemplate(newEmailTemplate);
+                console.log('New email template created successfully');
+            }
+        } catch (error) {
+            console.error('Error saving email template:', error);
+        }
+    };
+
     return (
         <div>
             <div className="mb-4">
@@ -32,27 +72,27 @@ const EmailForm: React.FC<EmailFormProps> = ({
                 <input
                     type="text"
                     id="emailSubject"
-                    value={selectedStep.emailSubject}
+                    value={emailTemplate.subject}
                     onChange={(e) =>
-                        setSelectedStep({
-                            ...selectedStep,
-                            emailSubject: e.target.value,
+                        setEmailTemplate({
+                            ...emailTemplate,
+                            subject: e.target.value,
                         })
                     }
                     className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
             <div className="mb-4">
-                <label htmlFor="emailTemplate" className="block mb-2">
-                    Email Template:
+                <label htmlFor="emailBody" className="block mb-2">
+                    Email Body:
                 </label>
                 <textarea
-                    id="emailTemplate"
-                    value={selectedStep.emailTemplate}
+                    id="emailBody"
+                    value={emailTemplate.body}
                     onChange={(e) =>
-                        setSelectedStep({
-                            ...selectedStep,
-                            emailTemplate: e.target.value,
+                        setEmailTemplate({
+                            ...emailTemplate,
+                            body: e.target.value,
                         })
                     }
                     className="bg-gray-900 p-2 rounded w-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -60,24 +100,18 @@ const EmailForm: React.FC<EmailFormProps> = ({
                 ></textarea>
             </div>
             <button
-                onClick={saveEmailSubjectAndTemplate}
+                onClick={handleSaveEmailTemplate}
                 className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200"
             >
                 <FontAwesomeIcon icon={faSave} className="mr-2" />
                 Save
             </button>
-            {selectedStep.emailTemplate.trim() !== '' && (
+            {emailTemplate.body.trim() !== '' && (
                 <div className="mt-4">
                     <h4 className="text-xl font-bold mb-2">Preview:</h4>
                     <div className="bg-gray-900 p-4 rounded overflow-auto max-h-[300px] max-w-[500px]">
-                        <p className="font-bold mb-2">
-                            {DOMPurify.sanitize(selectedStep.emailSubject)}
-                        </p>
-                        <div
-                            dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(selectedStep.emailTemplate),
-                            }}
-                        ></div>
+                        <p className="font-bold mb-2">{DOMPurify.sanitize(emailTemplate.subject)}</p>
+                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(emailTemplate.body) }}></div>
                     </div>
                 </div>
             )}

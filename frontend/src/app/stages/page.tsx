@@ -1,189 +1,139 @@
-// app/stages/page.tsx
+// page.tsx
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import EmailForm from "@/app/stages/EmailForm";
-import StageComponent from "@/app/stages/Stage";
-import WaitTimeInput from "@/app/stages/WaitTimeInput";
-import withAuth from "@/app/util/withAuth";
-
-type Step = {
-    id: string;
-    name: string;
-    emailSubject: string;
-    emailTemplate: string;
-    waitTime: number;
-};
-
-type Stage = {
-    id: string;
-    name: string;
-    steps: Step[];
-};
-type StageName = 'leads' | 'consultation' | 'proposal' | 'scheduled' | 'signing' | 'install' | 'maintenance';
-
-const stageSteps: Record<StageName, string[]> = {
-    leads: ['Identified', 'Contacted', 'Engaged'],
-    consultation: ['Initial Meeting', 'Follow-up', 'Final Review'],
-    proposal: ['Drafted', 'Sent', 'Revised'],
-    scheduled: ['Appointment Set', 'Reminder Sent', 'Completed'],
-    signing: ['Documents Prepared', 'Signing Underway', 'Signed'],
-    install: ['Scheduled', 'In Progress', 'Finalized'],
-    maintenance: ['Scheduled', 'In Progress', 'Completed']
-};
-const emailTemplates: Record<StageName, { subject: string; template: string; }[]> = {
-    leads: [
-        { subject: 'Introduction', template: 'Dear [Name], ...' },
-        { subject: 'Follow-up', template: 'Dear [Name], ...' },
-        { subject: 'Next Steps', template: 'Dear [Name], ...' },
-    ],
-    consultation: [
-        { subject: 'Meeting Confirmation', template: 'Dear [Name], ...' },
-        { subject: 'Follow-up Information', template: 'Dear [Name], ...' },
-        { subject: 'Final Review', template: 'Dear [Name], ...' },
-    ],
-    proposal: [
-        { subject: 'Proposal Draft', template: 'Dear [Name], ...' },
-        { subject: 'Proposal Sent', template: 'Dear [Name], ...' },
-        { subject: 'Revised Proposal', template: 'Dear [Name], ...' },
-    ],
-    scheduled: [
-        { subject: 'Appointment Confirmation', template: 'Dear [Name], ...' },
-        { subject: 'Appointment Reminder', template: 'Dear [Name], ...' },
-        { subject: 'Appointment Completed', template: 'Dear [Name], ...' },
-    ],
-    signing: [
-        { subject: 'Documents Ready', template: 'Dear [Name], ...' },
-        { subject: 'Signing In Progress', template: 'Dear [Name], ...' },
-        { subject: 'Signing Completed', template: 'Dear [Name], ...' },
-    ],
-    install: [
-        { subject: 'Installation Scheduled', template: 'Dear [Name], ...' },
-        { subject: 'Installation Progress', template: 'Dear [Name], ...' },
-        { subject: 'Installation Completed', template: 'Dear [Name], ...' },
-    ],
-    maintenance: [
-        { subject: 'Maintenance Scheduled', template: 'Dear [Name], ...' },
-        { subject: 'Maintenance Progress', template: 'Dear [Name], ...' },
-        { subject: 'Maintenance Completed', template: 'Dear [Name], ...' },
-    ],
-};
-
-let stageId = 1;
-let stepId = 1;
-
-const initialStages: Stage[] = Object.entries(stageSteps).map(([stageName, stageSteps]) => {
-    const stage: Stage = {
-        id: `${stageId++}`,
-        name: stageName.charAt(0).toUpperCase() + stageName.slice(1),
-        steps: stageSteps.map((stageStep, index) => ({
-            id: `${stageName}-${stepId++}`,
-            name: stageStep,
-            emailSubject: emailTemplates[stageName as StageName][index].subject,
-            emailTemplate: emailTemplates[stageName as StageName][index].template,
-            waitTime: 5,
-        })),
-    };
-    return stage;
-});
+import EmailForm from './EmailForm';
+import StageComponent from './Stage';
+import WaitTimeInput from './WaitTimeInput';
+import withAuth from '@/app/util/withAuth';
+import { fetchStages, createStage, updateStage, deleteStage, createStep, deleteStep, updateStep, createEmailTemplate } from './stagesUtils';
 
 const Stages: React.FC = () => {
-    const [stages, setStages] = useState<Stage[]>(initialStages);
+    const [stages, setStages] = useState<Stage[]>([]);
     const [newStageName, setNewStageName] = useState('');
     const [newStepName, setNewStepName] = useState('');
     const [selectedStage, setSelectedStage] = useState<Stage | null>(null);
     const [selectedStep, setSelectedStep] = useState<Step | null>(null);
 
     useEffect(() => {
-        const savedStages = localStorage.getItem('stages');
-        if (savedStages) {
-            setStages(JSON.parse(savedStages));
-        }
+        const fetchData = async () => {
+            try {
+                const fetchedStages = await fetchStages();
+                setStages(fetchedStages);
+            } catch (error) {
+                console.error('Error fetching stages:', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem('stages', JSON.stringify(stages));
-    }, [stages]);
-
-    const addStage = () => {
+    const handleAddStage = async () => {
         if (newStageName.trim() !== '') {
-            const newStage: Stage = {
-                id: Date.now().toString(),
-                name: newStageName,
-                steps: [],
-            };
-            setStages([...stages, newStage]);
-            setNewStageName('');
+            try {
+                const newStage = await createStage(newStageName);
+                setStages([...stages, newStage]);
+                setNewStageName('');
+            } catch (error) {
+                console.error('Error creating stage:', error);
+            }
         }
     };
 
-    const updateStageName = (stageId: string, newName: string) => {
-        setStages(
-            stages.map((stage) =>
-                stage.id === stageId ? { ...stage, name: newName } : stage
-            )
-        );
+    const handleUpdateStageName = async (stageId: number, newName: string) => {
+        try {
+            await updateStage(stageId, newName);
+            setStages(stages.map((stage) => (stage.id === stageId ? { ...stage, name: newName } : stage)));
+        } catch (error) {
+            console.error('Error updating stage name:', error);
+        }
     };
 
-    const deleteStage = (stageId: string) => {
-        setStages(stages.filter((stage) => stage.id !== stageId));
+    const handleDeleteStage = async (stageId: number) => {
+        try {
+            await deleteStage(stageId);
+            setStages(stages.filter((stage) => stage.id !== stageId));
+        } catch (error) {
+            console.error('Error deleting stage:', error);
+        }
     };
 
-    const addStep = (stageId: string) => {
+    const handleAddStep = async (stageId: number) => {
         if (newStepName.trim() !== '') {
-            const newStep: Step = {
-                id: Date.now().toString(),
-                name: newStepName,
-                emailSubject: '',
-                emailTemplate: '',
-                waitTime: 5,
-            };
-            setStages(
-                stages.map((stage) =>
-                    stage.id === stageId
-                        ? { ...stage, steps: [...stage.steps, newStep] }
-                        : stage
-                )
-            );
-            setNewStepName('');
+            try {
+                const newStep: Omit<Step, 'id'> = {
+                    deleted_at: null,
+                    stage_id: stageId,
+                    name: newStepName,
+                    description: '',
+                    email_template_id: 0,
+                    email_template: null,
+                    wait_time: 0,
+                };
+
+                const createdStep = await createStep(stageId, newStep);
+                setStages(
+                    stages.map((stage) => {
+                        if (stage.id === stageId) {
+                            const updatedSteps = stage.steps ? [...stage.steps, createdStep] : [createdStep];
+                            return { ...stage, steps: updatedSteps };
+                        }
+                        return stage;
+                    })
+                );
+                setNewStepName('');
+            } catch (error) {
+                console.error('Error creating step:', error);
+            }
         }
     };
 
-    const deleteStep = (stageId: string, stepId: string) => {
-        setStages(
-            stages.map((stage) =>
-                stage.id === stageId
-                    ? {
-                        ...stage,
-                        steps: stage.steps.filter((step) => step.id !== stepId),
+    const handleDeleteStep = async (stageId: number, stepId: number) => {
+        try {
+            await deleteStep(stepId);
+            setStages(
+                stages.map((stage): Stage => {
+                    if (stage.id === stageId) {
+                        const updatedSteps = stage.steps?.filter((step) => step.id !== stepId) || [];
+                        return { ...stage, steps: updatedSteps };
                     }
-                    : stage
-            )
-        );
+                    return stage;
+                })
+            );
+        } catch (error) {
+            console.error('Error deleting step:', error);
+        }
     };
 
-    const saveEmailSubjectAndTemplate = () => {
-        if (selectedStage && selectedStep) {
+    const handleUpdateWaitTime = async (stepId: number, waitTime: number) => {
+        try {
+            await updateStep(stepId, { wait_time: waitTime });
             setStages(
-                stages.map((stage) =>
-                    stage.id === selectedStage.id
-                        ? {
-                            ...stage,
-                            steps: stage.steps.map((step) =>
-                                step.id === selectedStep.id
-                                    ? {
-                                        ...step,
-                                        emailSubject: selectedStep.emailSubject,
-                                        emailTemplate: selectedStep.emailTemplate,
-                                    }
-                                    : step
-                            ),
-                        }
-                        : stage
-                )
+                stages.map((stage) => ({
+                    ...stage,
+                    steps: stage.steps?.map((step) => (step.id === stepId ? { ...step, wait_time: waitTime } : step)) || [],
+                }))
             );
+        } catch (error) {
+            console.error('Error updating wait time:', error);
+        }
+    };
+
+    const handleCreateEmailTemplate = async (stepId: number): Promise<EmailTemplate> => {
+        try {
+            const newEmailTemplate: Omit<EmailTemplate, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> = {
+                name: '',
+                subject: '',
+                body: '',
+                content_type: 'text/html',
+            };
+            const createdEmailTemplate = await createEmailTemplate(stepId, newEmailTemplate);
+            return createdEmailTemplate;
+        } catch (error) {
+            console.error('Error creating email template:', error);
+            throw error;
         }
     };
 
@@ -198,10 +148,10 @@ const Stages: React.FC = () => {
                         <StageComponent
                             key={stage.id}
                             stage={stage}
-                            updateStageName={updateStageName}
-                            deleteStage={deleteStage}
-                            addStep={addStep}
-                            deleteStep={deleteStep}
+                            updateStageName={handleUpdateStageName}
+                            deleteStage={handleDeleteStage}
+                            addStep={handleAddStep}
+                            deleteStep={handleDeleteStep}
                             setSelectedStage={setSelectedStage}
                             setSelectedStep={setSelectedStep}
                             newStepName={newStepName}
@@ -218,7 +168,7 @@ const Stages: React.FC = () => {
                                 placeholder="Enter new stage name"
                             />
                             <button
-                                onClick={addStage}
+                                onClick={handleAddStage}
                                 className="ml-2 px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200"
                             >
                                 <FontAwesomeIcon icon={faPlus} />
@@ -230,15 +180,8 @@ const Stages: React.FC = () => {
                     {selectedStep && (
                         <div className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
                             <h3 className="text-2xl font-bold mb-4">{selectedStep.name}</h3>
-                            <EmailForm
-                                selectedStep={selectedStep}
-                                setSelectedStep={setSelectedStep}
-                                saveEmailSubjectAndTemplate={saveEmailSubjectAndTemplate}
-                            />
-                            <WaitTimeInput
-                                selectedStep={selectedStep}
-                                setSelectedStep={setSelectedStep}
-                            />
+                            <EmailForm selectedStep={selectedStep} createEmailTemplate={handleCreateEmailTemplate} />
+                            <WaitTimeInput selectedStep={selectedStep} updateWaitTime={handleUpdateWaitTime} />
                         </div>
                     )}
                 </div>
