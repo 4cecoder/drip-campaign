@@ -56,10 +56,10 @@ export const Endpoints = {
     getSettings: `${API_BASE_URL}/settings`,
     updateSettings: `${API_BASE_URL}/settings`,
 
-    // Admin - Users
-    createUser: `${API_BASE_URL}/admin/users`,
-    getUsers: `${API_BASE_URL}/admin/users`,
-    getUser: (id: number) => `${API_BASE_URL}/admin/users/${id}`,
-    updateUser: (id: number) => `${API_BASE_URL}/admin/users/${id}`,
-    deleteUser: (id: number) => `${API_BASE_URL}/admin/users/${id}`,
+    // Admin Only Routes - Users
+    createUser: `${API_BASE_URL}/users`,
+    getUsers: `${API_BASE_URL}/users`,
+    getUser: (id: number) => `${API_BASE_URL}/users/${id}`,
+    updateUser: (id: number) => `${API_BASE_URL}/users/${id}`,
+    deleteUser: (id: number) => `${API_BASE_URL}/users/${id}`,
 };
