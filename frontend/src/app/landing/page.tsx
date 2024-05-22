@@ -22,7 +22,7 @@ const LandingPage: React.FC = () => {
           <div className="text-center">
             <h2 className="text-5xl font-bold mb-4">Simplify Your Email Marketing</h2>
             <p className="text-xl mb-8">Create, manage, and analyze effective drip campaigns with ease.</p>
-            <Link href="/signup">
+            <Link href="/contact">
               <button className="bg-white text-purple-600 font-bold py-3 px-6 rounded-full text-xl transition duration-200 hover:bg-purple-100">
                 Get Started
               </button>
