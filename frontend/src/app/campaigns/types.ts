@@ -1,6 +1,7 @@
-// app/types.ts
+// app/campaigns/types.ts
 
 export type Customer = {
+    campaign_id: string;
     id: string;
     first_name: string;
     last_name: string;
@@ -8,6 +9,7 @@ export type Customer = {
     stage: string;
     stagePoint?: string;
     inCampaign: boolean;
+    campaignCustomerId?: number;
 };
 
 export type StagePoints = {

@@ -1,13 +1,17 @@
+// src/app/util/api.ts
 import axios from "axios"
 
+
 const axiosWithAuth = () => {
+    const token = window.localStorage.getItem("token");
     return axios.create({
         headers: {
-            authorization: window.localStorage.getItem("token")
+            Authorization: `Bearer ${token}`,
         },
         baseURL: process.env.NEXT_PUBLIC_URL,
     })
 }
+
 
 export const get = (url: string) => {
    return axiosWithAuth().get(url);

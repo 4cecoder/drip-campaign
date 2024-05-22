@@ -1,4 +1,5 @@
-// src/app/util/types.ts
+// src/app/util/globalTypes.ts
+
 declare global {
     interface Model {
         id: number;
