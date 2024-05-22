@@ -1,43 +1,47 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPlusCircle, faCheckCircle, faTimesCircle, faSave } from '@fortawesome/free-solid-svg-icons';
 import withAuth from "@/app/util/withAuth";
+import { fetchCustomers, updateCustomerSubscription, saveUnsubscribeTemplate } from './subscriptionsUtils';
 
 const Subscriptions: React.FC = () => {
-    const [emailSubscriptions, setEmailSubscriptions] = useState([
-        { id: 1, email: 'user@example.com', subscribed: true },
-        { id: 2, email: 'anotheruser@example.com', subscribed: false },
-    ]);
+    const [emailSubscriptions, setEmailSubscriptions] = useState<Customer[]>([]);
+    const [unsubscribeTemplate, setUnsubscribeTemplate] = useState('');
 
-    const [potentialSubscribers, setPotentialSubscribers] = useState([
-        { id: 3, email: 'newuser@example.com' },
-        { id: 4, email: 'guest@example.com' },
-    ]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const customers = await fetchCustomers();
+                setEmailSubscriptions(customers);
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            }
+        };
 
-    const toggleSubscription = (id: number) => {
-        setEmailSubscriptions(
-            emailSubscriptions.map(sub =>
-                sub.id === id ? { ...sub, subscribed: !sub.subscribed } : sub
-            )
-        );
+        fetchData();
+    }, []);
+
+    const toggleSubscription = async (id: number) => {
+        try {
+            await updateCustomerSubscription(id);
+            setEmailSubscriptions(
+                emailSubscriptions.map(customer =>
+                    customer.id === id ? { ...customer, subscribed: !customer.subscribed } : customer
+                )
+            );
+        } catch (error) {
+            console.error('Error updating subscription status:', error);
+        }
     };
 
-    const addSubscriber = (subscriber: { id: number; email: string }) => {
-        setEmailSubscriptions([...emailSubscriptions, { ...subscriber, subscribed: true }]);
-        setPotentialSubscribers(potentialSubscribers.filter(sub => sub.id !== subscriber.id));
-    };
-
-    const [unsubscribeTemplate, setUnsubscribeTemplate] = useState(`
-        <p>Dear {{name}},</p>
-        <p>You have been successfully unsubscribed from our email list.</p>
-        <p>If you have any questions or concerns, please contact us.</p>
-        <p>Best regards,<br>The Team</p>
-    `);
-    const saveUnsubscribeTemplate = () => {
-        // TODO: Send the updated unsubscribe template to the server when backend is ready
-        console.log('Saving unsubscribe template:', unsubscribeTemplate);
-        // Display a success message or handle any errors
+    const handleSaveUnsubscribeTemplate = async () => {
+        try {
+            await saveUnsubscribeTemplate(unsubscribeTemplate);
+            console.log('Unsubscribe template saved successfully');
+        } catch (error) {
+            console.error('Error saving unsubscribe template:', error);
+        }
     };
 
     return (
@@ -48,40 +52,21 @@ const Subscriptions: React.FC = () => {
             <p className="mb-6 text-xl text-center">Search and manually manage customer E-Mail subscriptions for this system.</p>
 
             <div className="max-w-xl mx-auto">
-                {emailSubscriptions.map(sub => (
-                    <div key={sub.id} className="mb-4 bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
+                {emailSubscriptions.map(customer => (
+                    <div key={customer.id} className="mb-4 bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
                         <div className="flex justify-between items-center">
                             <span>
                                 <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
-                                {sub.email}
+                                {customer.email}
                             </span>
                             <button
-                                className={`px-4 py-2 text-sm font-bold rounded flex items-center ${sub.subscribed ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
-                                onClick={() => toggleSubscription(sub.id)}
+                                className={`px-4 py-2 text-sm font-bold rounded flex items-center ${customer.subscribed ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
+                                onClick={() => toggleSubscription(customer.id)}
                             >
-                                <FontAwesomeIcon icon={sub.subscribed ? faTimesCircle : faCheckCircle} className="mr-2" />
-                                {sub.subscribed ? 'Unsubscribe' : 'Subscribed'}
+                                <FontAwesomeIcon icon={customer.subscribed ? faTimesCircle : faCheckCircle} className="mr-2" />
+                                {customer.subscribed ? 'Unsubscribe' : 'Subscribe'}
                             </button>
                         </div>
-                    </div>
-                ))}
-
-                <h3 className="text-xl font-bold mb-3 mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-                    Add New Subscribers
-                </h3>
-                {potentialSubscribers.map(sub => (
-                    <div key={sub.id} className="mb-4 bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700 flex justify-between items-center">
-                        <span>
-                            <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
-                            {sub.email}
-                        </span>
-                        <button
-                            className="px-4 py-2 text-sm font-bold rounded bg-blue-600 hover:bg-blue-700 flex items-center"
-                            onClick={() => addSubscriber(sub)}
-                        >
-                            <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
-                            Add
-                        </button>
                     </div>
                 ))}
             </div>
@@ -98,8 +83,8 @@ const Subscriptions: React.FC = () => {
                         />
                         <div className="flex justify-center mt-2">
                             <button
-                                className="px-4 py -2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
-                                onClick={saveUnsubscribeTemplate}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+                                onClick={handleSaveUnsubscribeTemplate}
                             >
                                 <FontAwesomeIcon icon={faSave} className="mr-2" />
                                 Save Template
