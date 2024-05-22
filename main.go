@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/4cecoder/drip-campaign/config"
 	"github.com/4cecoder/drip-campaign/database"
 	_ "github.com/4cecoder/drip-campaign/docs"
@@ -26,6 +27,7 @@ func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Println("Error loading .env file")
+		log.Println("Using default environment variables")
 	}
 
 	// Initialize the database connection
@@ -36,6 +38,8 @@ func main() {
 			log.Println("Error closing database connection:", err)
 		}
 	}(database.DB)
+
+	log.Println("Database connection initialized to " + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + " with database " + os.Getenv("DB_NAME") + " and user " + os.Getenv("DB_USER") + " successfully")
 
 	// Create a new Gin router
 	router := gin.Default()
@@ -58,10 +62,14 @@ func main() {
 	// Change me to your desired admin username and password
 	adminUsername := "admin"
 	adminPassword := "password"
-	err = CreateAdminUser(adminUsername, adminPassword)
-	if err != nil {
-		log.Println("Failed to create admin user: " + err.Error())
-	}
+	go func() {
+		err = CreateAdminUser(adminUsername, adminPassword)
+		if err != nil {
+			log.Println("Failed to create admin user: " + err.Error())
+		} else {
+			fmt.Println("Admin user created successfully")
+		}
+	}()
 
 	// Register routes
 	routes.RegisterRoutes(router)

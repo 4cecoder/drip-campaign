@@ -61,22 +61,10 @@ func ExtractToken(c *gin.Context) string {
 	return ""
 }
 
-func AdminAuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(requiredRole string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, err := VerifyToken(c)
-		if err != nil || role != "admin" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
-}
-
-func UserAuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		role, err := VerifyToken(c)
-		if err != nil || role != "user" {
+		if err != nil || role != requiredRole {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
