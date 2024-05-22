@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/4cecoder/drip-campaign/auth"
 	"github.com/4cecoder/drip-campaign/database"
+	"log"
 	"net/http"
 	"net/smtp"
 	"strconv"
@@ -445,15 +446,27 @@ func DeleteStepHandler(c *gin.Context) {
 func CreateCustomerHandler(c *gin.Context) {
 	var customer models.Customer
 	if err := c.ShouldBindJSON(&customer); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Println("Error binding JSON:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	log.Println("Received customer data:", customer)
+
+	// Validate required fields
+	if customer.Email == "" || customer.FirstName == "" || customer.LastName == "" {
+		log.Println("Missing required fields")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email, FirstName, and LastName are required fields"})
 		return
 	}
 
 	if err := database.DB.Create(&customer).Error; err != nil {
+		log.Println("Error creating customer in database:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create customer"})
 		return
 	}
 
+	log.Println("Customer created successfully:", customer)
 	c.JSON(http.StatusCreated, customer)
 }
 

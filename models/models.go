@@ -42,10 +42,25 @@ type Step struct {
 
 type Customer struct {
 	Model
-	Email     string `json:"email"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Phone     string `json:"phone"`
+	Email         string `json:"email"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	Phone         string `json:"phone" gorm:"default:null"`
+	Company       string `json:"company" gorm:"default:null"`
+	Address       string `json:"address" gorm:"default:null"`
+	City          string `json:"city" gorm:"default:null"`
+	State         string `json:"state" gorm:"default:null"`
+	Country       string `json:"country" gorm:"default:null"`
+	PostalCode    string `json:"postal_code" gorm:"default:null"`
+	Notes         string `json:"notes" gorm:"default:null"`
+	Tags          string `json:"tags" gorm:"default:null"`
+	EmailVerified bool   `json:"email_verified" gorm:"default:false"`
+	Subscribed    bool   `json:"subscribed" gorm:"default:false"`
+	LastContacted string `json:"last_contacted" gorm:"default:null"`
+	LeadSource    string `json:"lead_source" gorm:"default:null"`
+	LeadStatus    string `json:"lead_status" gorm:"default:null"`
+	CreatedBy     uint   `json:"created_by"`
+	AssignedTo    uint   `json:"assigned_to"`
 }
 
 type CampaignCustomer struct {
@@ -55,7 +70,7 @@ type CampaignCustomer struct {
 	Status     string    `json:"status"`
 	StartDate  time.Time `json:"start_date"`
 	EndDate    time.Time `json:"end_date"`
-	Subscribed bool      `json:"subscribed"` // Added field to track subscription status
+	Subscribed bool      `json:"subscribed" gorm:"default:false"`
 }
 
 type EmailTemplate struct {
