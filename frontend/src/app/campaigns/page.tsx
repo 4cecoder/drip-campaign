@@ -82,7 +82,7 @@ const CustomerManagement: React.FC = () => {
                 <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
                     Drip Campaign Management
                 </h1>
-                <Link href={"/imports"}>
+                <Link href={"/import"}>
                     <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 mb-4">
                         <FontAwesomeIcon icon={faFileImport} className="mr-2" />
                         Import Customers

@@ -6,6 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
 import fuzzysort from 'fuzzysort';
+import withAuth from "@/app/util/withAuth";
 
 type Customer = {
     firstName: string;
@@ -167,4 +168,4 @@ const ImportPage: React.FC = () => {
     );
 };
 
-export default ImportPage;
+export default withAuth(ImportPage);
