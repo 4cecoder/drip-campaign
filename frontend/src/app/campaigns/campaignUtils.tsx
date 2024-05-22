@@ -2,12 +2,28 @@
 
 import { Endpoints } from '@/lib/endpoints';
 import { del, get, post, put } from '../util/api';
+
 export type Customer = {
-    campaign_id: string;
-    id: string;
-    first_name: string;
-    last_name: string;
+    id: number;
     email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    company: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    notes: string;
+    tags: string;
+    emailVerified: boolean;
+    subscribed: boolean;
+    lastContacted: string;
+    leadSource: string;
+    leadStatus: string;
+    createdBy: number;
+    assignedTo: number;
     stage: string;
     stagePoint?: string;
     inCampaign: boolean;
@@ -17,34 +33,35 @@ export type Customer = {
 export type StagePoints = {
     [key: string]: string[];
 };
-export const updateCustomerStage = async (customerId: string, newStage: string): Promise<void> => {
+
+export const updateCustomerStage = async (customerId: number, newStage: string): Promise<void> => {
     try {
-        await put(Endpoints.updateCustomer(customerId), { stage: newStage });
+        await put(Endpoints.updateCustomer(customerId.toString()), { stage: newStage });
     } catch (error) {
         console.error('Error updating customer stage:', error);
         throw error;
     }
 };
 
-export const updateCustomerStagePoint = async (customerId: string, newStagePoint: string): Promise<void> => {
+export const updateCustomerStagePoint = async (customerId: number, newStagePoint: string): Promise<void> => {
     try {
-        await put(Endpoints.updateCustomer(customerId), { stagePoint: newStagePoint });
+        await put(Endpoints.updateCustomer(customerId.toString()), { stagePoint: newStagePoint });
     } catch (error) {
         console.error('Error updating customer stage point:', error);
         throw error;
     }
 };
 
-export const toggleCustomerCampaignStatus = async (campaignCustomerId: string): Promise<void> => {
+export const toggleCustomerCampaignStatus = async (campaignCustomerId: number): Promise<void> => {
     try {
-        await put(Endpoints.updateCampaignCustomer(campaignCustomerId), { subscribed: true });
+        await put(Endpoints.updateCampaignCustomer(campaignCustomerId.toString()), { subscribed: true });
     } catch (error) {
         console.error('Error toggling customer campaign status:', error);
         throw error;
     }
 };
 
-export const assignCustomerToCampaign = async (customerId: string, campaignId: number): Promise<void> => {
+export const assignCustomerToCampaign = async (customerId: number, campaignId: number): Promise<void> => {
     try {
         await post(Endpoints.createCampaignCustomer, { customer_id: customerId, campaign_id: campaignId });
     } catch (error) {
@@ -53,9 +70,9 @@ export const assignCustomerToCampaign = async (customerId: string, campaignId: n
     }
 };
 
-export const unassignCustomerFromCampaign = async (campaignCustomerId: string): Promise<void> => {
+export const unassignCustomerFromCampaign = async (campaignCustomerId: number): Promise<void> => {
     try {
-        await del(Endpoints.deleteCampaignCustomer(campaignCustomerId));
+        await del(Endpoints.deleteCampaignCustomer(campaignCustomerId.toString()));
     } catch (error) {
         console.error('Error unassigning customer from campaign:', error);
         throw error;
