@@ -8,7 +8,7 @@ export default function RootLayout({ children }: Readonly<{
     children: React.ReactNode;
 }>) {
     const pathname = usePathname();
-    const isExcludedRoute = pathname === "/landing" || pathname === "/login" || pathname === "/signup";
+    const isExcludedRoute = pathname === "/landing" || pathname === "/login" || pathname === "/signup" || pathname === "/unsubscribe" ||  pathname === "/login" || pathname === "/signup" || pathname === "/contact" ;
 
     const items = [
         { title: "Home", disabled: false, href: "/", external: false, items: [], src: "/home.svg" },
