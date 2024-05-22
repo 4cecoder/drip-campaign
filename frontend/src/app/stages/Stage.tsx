@@ -97,4 +97,4 @@ const Stage: React.FC<StageProps> = ({
     );
 };
 
-export default withAuth(Stage);
+export default Stage;
