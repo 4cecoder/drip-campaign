@@ -61,6 +61,16 @@ func ExtractToken(c *gin.Context) string {
 	return ""
 }
 
+func IsUserOrAdmin(c *gin.Context) {
+	role, err := VerifyToken(c)
+	if err != nil || (role != models.UserRole && role != models.AdminRole) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
 func AuthMiddleware(requiredRole string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, err := VerifyToken(c)

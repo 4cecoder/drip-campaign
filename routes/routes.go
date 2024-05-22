@@ -3,7 +3,6 @@ package routes
 import (
 	"github.com/4cecoder/drip-campaign/auth"
 	"github.com/4cecoder/drip-campaign/handlers"
-	"github.com/4cecoder/drip-campaign/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,63 +13,63 @@ func RegisterRoutes(router *gin.Engine) {
 		public.POST("/login", handlers.LoginHandler)
 	}
 
-	// Private routes accessible by users
-	userPrivate := router.Group("/api/v1")
-	userPrivate.Use(auth.AuthMiddleware("user")) // Use AuthMiddleware for user-accessible routes
+	// Routes accessible by users and admins
+	userAndAdmin := router.Group("/api/v1")
+	userAndAdmin.Use(auth.IsUserOrAdmin) // Use IsUserOrAdmin middleware
 	{
 		// Campaign routes
-		userPrivate.POST("/campaigns", handlers.CreateCampaignHandler)
-		userPrivate.GET("/campaigns", handlers.GetCampaignsHandler)
-		userPrivate.GET("/campaigns/:id", handlers.GetCampaignHandler)
-		userPrivate.PUT("/campaigns/:id", handlers.UpdateCampaignHandler)
-		userPrivate.DELETE("/campaigns/:id", handlers.DeleteCampaignHandler)
+		userAndAdmin.POST("/campaigns", handlers.CreateCampaignHandler)
+		userAndAdmin.GET("/campaigns", handlers.GetCampaignsHandler)
+		userAndAdmin.GET("/campaigns/:id", handlers.GetCampaignHandler)
+		userAndAdmin.PUT("/campaigns/:id", handlers.UpdateCampaignHandler)
+		userAndAdmin.DELETE("/campaigns/:id", handlers.DeleteCampaignHandler)
 
 		// Stage routes
-		userPrivate.POST("/stages", handlers.CreateStageHandler)
-		userPrivate.GET("/stages", handlers.GetStagesHandler)
-		userPrivate.GET("/stages/:id", handlers.GetStageHandler)
-		userPrivate.PUT("/stages/:id", handlers.UpdateStageHandler)
-		userPrivate.DELETE("/stages/:id", handlers.DeleteStageHandler)
+		userAndAdmin.POST("/stages", handlers.CreateStageHandler)
+		userAndAdmin.GET("/stages", handlers.GetStagesHandler)
+		userAndAdmin.GET("/stages/:id", handlers.GetStageHandler)
+		userAndAdmin.PUT("/stages/:id", handlers.UpdateStageHandler)
+		userAndAdmin.DELETE("/stages/:id", handlers.DeleteStageHandler)
 
 		// Step routes
-		userPrivate.POST("/steps", handlers.CreateStepHandler)
-		userPrivate.GET("/steps", handlers.GetStepsHandler)
-		userPrivate.GET("/steps/:id", handlers.GetStepHandler)
-		userPrivate.PUT("/steps/:id", handlers.UpdateStepHandler)
-		userPrivate.DELETE("/steps/:id", handlers.DeleteStepHandler)
+		userAndAdmin.POST("/steps", handlers.CreateStepHandler)
+		userAndAdmin.GET("/steps", handlers.GetStepsHandler)
+		userAndAdmin.GET("/steps/:id", handlers.GetStepHandler)
+		userAndAdmin.PUT("/steps/:id", handlers.UpdateStepHandler)
+		userAndAdmin.DELETE("/steps/:id", handlers.DeleteStepHandler)
 
 		// Customer routes
-		userPrivate.POST("/customers", handlers.CreateCustomerHandler)
-		userPrivate.GET("/customers", handlers.GetCustomersHandler)
-		userPrivate.GET("/customers/:id", handlers.GetCustomerHandler)
-		userPrivate.PUT("/customers/:id", handlers.UpdateCustomerHandler)
-		userPrivate.DELETE("/customers/:id", handlers.DeleteCustomerHandler)
+		userAndAdmin.POST("/customers", handlers.CreateCustomerHandler)
+		userAndAdmin.GET("/customers", handlers.GetCustomersHandler)
+		userAndAdmin.GET("/customers/:id", handlers.GetCustomerHandler)
+		userAndAdmin.PUT("/customers/:id", handlers.UpdateCustomerHandler)
+		userAndAdmin.DELETE("/customers/:id", handlers.DeleteCustomerHandler)
 
 		// Campaign customer routes
-		userPrivate.POST("/campaign-customers", handlers.CreateCampaignCustomerHandler)
-		userPrivate.GET("/campaign-customers", handlers.GetCampaignCustomersHandler)
-		userPrivate.GET("/campaign-customers/:id", handlers.GetCampaignCustomerHandler)
-		userPrivate.PUT("/campaign-customers/:id", handlers.UpdateCampaignCustomerHandler)
-		userPrivate.DELETE("/campaign-customers/:id", handlers.DeleteCampaignCustomerHandler)
+		userAndAdmin.POST("/campaign-customers", handlers.CreateCampaignCustomerHandler)
+		userAndAdmin.GET("/campaign-customers", handlers.GetCampaignCustomersHandler)
+		userAndAdmin.GET("/campaign-customers/:id", handlers.GetCampaignCustomerHandler)
+		userAndAdmin.PUT("/campaign-customers/:id", handlers.UpdateCampaignCustomerHandler)
+		userAndAdmin.DELETE("/campaign-customers/:id", handlers.DeleteCampaignCustomerHandler)
 
 		// Send an email route
-		userPrivate.POST("/send-email", handlers.SendEmailHandler)
+		userAndAdmin.POST("/send-email", handlers.SendEmailHandler)
 
 		// Email Template routes
-		userPrivate.POST("/templates", handlers.CreateEmailTemplateHandler)
-		userPrivate.GET("/templates", handlers.GetEmailTemplatesHandler)
-		userPrivate.GET("/templates/:id", handlers.GetEmailTemplateHandler)
-		userPrivate.PUT("/templates/:id", handlers.UpdateEmailTemplateHandler)
-		userPrivate.DELETE("/templates/:id", handlers.DeleteEmailTemplateHandler)
+		userAndAdmin.POST("/templates", handlers.CreateEmailTemplateHandler)
+		userAndAdmin.GET("/templates", handlers.GetEmailTemplatesHandler)
+		userAndAdmin.GET("/templates/:id", handlers.GetEmailTemplateHandler)
+		userAndAdmin.PUT("/templates/:id", handlers.UpdateEmailTemplateHandler)
+		userAndAdmin.DELETE("/templates/:id", handlers.DeleteEmailTemplateHandler)
 
 		// Settings routes
-		userPrivate.GET("/settings", handlers.GetSettingsHandler)
-		userPrivate.PUT("/settings", handlers.UpdateSettingsHandler)
+		userAndAdmin.GET("/settings", handlers.GetSettingsHandler)
+		userAndAdmin.PUT("/settings", handlers.UpdateSettingsHandler)
 	}
 
 	// Admin routes
 	adminPrivate := router.Group("/api/v1")
-	adminPrivate.Use(auth.AuthMiddleware(models.AdminRole)) // Use AuthMiddleware for admin-only routes
+	adminPrivate.Use(auth.AuthMiddleware("admin")) // Use AuthMiddleware for admin-only routes
 	{
 		// User routes
 		adminPrivate.POST("/users", handlers.CreateUserHandler)
