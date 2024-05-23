@@ -1,7 +1,6 @@
-// src/app/lib/endpoints.ts
+import config from '../config';
 
-
-const API_BASE_URL = '';
+const API_BASE_URL = config.API_BASE_URL;
 
 export const Endpoints = {
     // Auth

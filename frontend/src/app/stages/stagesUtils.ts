@@ -20,8 +20,8 @@ export const deleteStage = async (stageId: number): Promise<void> => {
     await del(Endpoints.deleteStage(stageId));
 };
 
-export const createStep = async (stageId: number, newStep: Step): Promise<Step> => {
-    const response = await post(Endpoints.createStep, { stageId, ...newStep });
+export const createStep = async (stageId: number, newStep: Omit<Step, 'id'>): Promise<Step> => {
+    const response = await post(Endpoints.createStep, { StageID: stageId, ...newStep });
     return response.data;
 };
 
@@ -37,11 +37,11 @@ export const fetchEmailTemplate = async (emailTemplateId: number): Promise<Email
 
 export const createEmailTemplate = async (
     stepId: number,
-    newEmailTemplate: Omit<EmailTemplate, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>
+    newEmailTemplate: Pick<EmailTemplate, 'name' | 'subject' | 'body' | 'content_type'>
 ): Promise<EmailTemplate> => {
-    const response = await post(Endpoints.createEmailTemplate, { stepId, ...newEmailTemplate });
+    const response = await post(Endpoints.createEmailTemplate, { ...newEmailTemplate });
     return response.data;
-}
+};
 
 export const updateEmailTemplate = async (emailTemplateId: number, updatedData: Partial<EmailTemplate>): Promise<void> => {
     await put(Endpoints.updateEmailTemplate(emailTemplateId), updatedData);

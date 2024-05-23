@@ -27,7 +27,7 @@ const Stages: React.FC = () => {
             }
         };
 
-        fetchData();
+        fetchData().then(r => console.log(r));
     }, []);
 
     const handleAddStage = async () => {
@@ -64,6 +64,8 @@ const Stages: React.FC = () => {
         if (newStepName.trim() !== '') {
             try {
                 const newStep: Omit<Step, 'id'> = {
+                    created_at: '',
+                    updated_at: '',
                     deleted_at: null,
                     stage_id: stageId,
                     name: newStepName,
@@ -90,16 +92,13 @@ const Stages: React.FC = () => {
         }
     };
 
-    const handleDeleteStep = async (stageId: number, stepId: number) => {
+    const handleDeleteStep = async (stepId: number) => {
         try {
             await deleteStep(stepId);
             setStages(
                 stages.map((stage): Stage => {
-                    if (stage.id === stageId) {
-                        const updatedSteps = stage.steps?.filter((step) => step.id !== stepId) || [];
-                        return { ...stage, steps: updatedSteps };
-                    }
-                    return stage;
+                    const updatedSteps = stage.steps?.filter((step) => step.id !== stepId) || null;
+                    return { ...stage, steps: updatedSteps };
                 })
             );
         } catch (error) {
@@ -113,7 +112,7 @@ const Stages: React.FC = () => {
             setStages(
                 stages.map((stage) => ({
                     ...stage,
-                    steps: stage.steps?.map((step) => (step.id === stepId ? { ...step, wait_time: waitTime } : step)) || [],
+                    steps: stage.steps?.map((step) => (step.id === stepId ? { ...step, wait_time: waitTime } : step)) || null,
                 }))
             );
         } catch (error) {
@@ -123,17 +122,23 @@ const Stages: React.FC = () => {
 
     const handleCreateEmailTemplate = async (stepId: number): Promise<EmailTemplate> => {
         try {
-            const newEmailTemplate: Omit<EmailTemplate, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> = {
+            const newEmailTemplate: Pick<EmailTemplate, 'name' | 'subject' | 'body' | 'content_type'> = {
                 name: '',
                 subject: '',
                 body: '',
                 content_type: 'text/html',
             };
             const createdEmailTemplate = await createEmailTemplate(stepId, newEmailTemplate);
+            setStages(
+                stages.map((stage) => ({
+                    ...stage,
+                    steps: stage.steps?.map((step) => (step.id === stepId ? { ...step, email_template_id: createdEmailTemplate.id } : step)) || null,
+                }))
+            );
             return createdEmailTemplate;
         } catch (error) {
             console.error('Error creating email template:', error);
-            throw error;
+            throw error; // or return a default EmailTemplate object
         }
     };
 

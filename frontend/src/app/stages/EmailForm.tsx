@@ -7,19 +7,19 @@ import { fetchEmailTemplate, updateEmailTemplate } from './stagesUtils';
 
 type EmailFormProps = {
     selectedStep: Step;
-    createEmailTemplate: (stepId: number) => Promise<void>;
+    createEmailTemplate: (stepId: number) => Promise<EmailTemplate>;
 };
 
 const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate }) => {
     const [emailTemplate, setEmailTemplate] = useState<EmailTemplate>({
         id: 0,
+        created_at: '',
+        updated_at: '',
+        deleted_at: null,
         name: '',
         subject: '',
         body: '',
         content_type: '',
-        created_at: '',
-        updated_at: '',
-        deleted_at: null,
     });
 
     useEffect(() => {
@@ -34,13 +34,13 @@ const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate
             } else {
                 setEmailTemplate({
                     id: 0,
+                    created_at: '',
+                    updated_at: '',
+                    deleted_at: null,
                     name: '',
                     subject: '',
                     body: '',
                     content_type: '',
-                    created_at: '',
-                    updated_at: '',
-                    deleted_at: null,
                 });
             }
         };

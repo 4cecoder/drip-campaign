@@ -8,7 +8,7 @@ type StageProps = {
     updateStageName: (stageId: number, newName: string) => void;
     deleteStage: (stageId: number) => void;
     addStep: (stageId: number) => void;
-    deleteStep: (stageId: number, stepId: number) => void;
+    deleteStep: (stepId: number) => void;
     setSelectedStage: (stage: Stage) => void;
     setSelectedStep: (step: Step) => void;
     newStepName: string;
@@ -57,7 +57,7 @@ const Stage: React.FC<StageProps> = ({
                             className="ml-2 text-red-500 cursor-pointer hover:text-red-600 transition duration-200"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                deleteStep(stage.id, step.id);
+                                deleteStep(step.id);
                             }}
                         />
                     </li>
