@@ -1,6 +1,6 @@
 # drip-campaign
 
-[![Go](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml/badge.svg)](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml) [![Node.js CI](https://github.com/4cecoder/drip-campaign/actions/workflows/node.js.yml/badge.svg)](https://github.com/4cecoder/drip-campaign/actions/workflows/node.js.yml) [![Netlify Status](https://api.netlify.com/api/v1/badges/5ec0b76a-34fc-4a43-abc0-0268816c18f3/deploy-status)](https://app.netlify.com/sites/dropcampaign/deploys)
+[![Go](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml/badge.svg)](https://github.com/4cecoder/drip-campaign/actions/workflows/go.yml) [![Node.js CI](https://github.com/4cecoder/drip-campaign/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/4cecoder/drip-campaign/actions/workflows/node.js.yml) [![Netlify Status](https://api.netlify.com/api/v1/badges/5ec0b76a-34fc-4a43-abc0-0268816c18f3/deploy-status)](https://app.netlify.com/sites/dropcampaign/deploys)
 
 ## Introduction
 
