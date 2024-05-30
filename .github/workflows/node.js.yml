@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted # Change this line to use your self-hosted runner
     strategy:
       matrix:
         node-version: [18.x, 22.x]
