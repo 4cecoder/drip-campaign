@@ -12,10 +12,10 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted # Change this line to use your self-hosted runner
+    runs-on: self-hosted # Ensures the workflow runs on a self-hosted runner
     strategy:
       matrix:
-        node-version: [18.x, 22.x]
+        node-version: [18.x] # Specifies Node.js 18.x or above
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
