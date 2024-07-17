@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faPlusCircle, faCheckCircle, faTimesCircle, faSave } from '@fortawesome/free-solid-svg-icons';
+import { MdEmail, MdAddCircle, MdCheckCircle, MdCancel, MdSave } from 'react-icons/md';
 import withAuth from "@/app/util/withAuth";
 import { fetchCustomers, updateCustomerSubscription, saveUnsubscribeTemplate } from './subscriptionsUtils';
 
@@ -56,14 +55,14 @@ const Subscriptions: React.FC = () => {
                     <div key={customer.id} className="mb-4 bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
                         <div className="flex justify-between items-center">
                             <span>
-                                <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+                                <MdEmail className="inline mr-2" />
                                 {customer.email}
                             </span>
                             <button
                                 className={`px-4 py-2 text-sm font-bold rounded flex items-center ${customer.subscribed ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
                                 onClick={() => toggleSubscription(customer.id)}
                             >
-                                <FontAwesomeIcon icon={customer.subscribed ? faTimesCircle : faCheckCircle} className="mr-2" />
+                                {customer.subscribed ? <MdCancel className="mr-2" /> : <MdCheckCircle className="mr-2" />}
                                 {customer.subscribed ? 'Unsubscribe' : 'Subscribe'}
                             </button>
                         </div>
@@ -86,7 +85,7 @@ const Subscriptions: React.FC = () => {
                                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
                                 onClick={handleSaveUnsubscribeTemplate}
                             >
-                                <FontAwesomeIcon icon={faSave} className="mr-2" />
+                                <MdSave className="mr-2" />
                                 Save Template
                             </button>
                         </div>

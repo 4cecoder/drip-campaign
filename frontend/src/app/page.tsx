@@ -1,14 +1,7 @@
-// import Image from "next/image";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faUsers,
-    faEnvelope,
-    faTasks,
-    faBarsProgress,
-    faCogs,
-} from "@fortawesome/free-solid-svg-icons";
-import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons/faEnvelopeCircleCheck";
+import { FaUsers, FaEnvelope, FaTasks, FaCogs } from "react-icons/fa";
+import { MdOutlineBarChart } from "react-icons/md";
+import { AiOutlineMail } from "react-icons/ai";
 
 export default function Home() {
     return (
@@ -24,7 +17,7 @@ export default function Home() {
                             <li>
                                 <Link href="/campaigns" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faUsers} />
+                    <FaUsers />
                   </span>
                                     Campaign Management
                                 </Link>
@@ -32,7 +25,7 @@ export default function Home() {
                             <li>
                                 <Link href="/emails" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faEnvelope} />
+                    <FaEnvelope />
                   </span>
                                     Email Tracking
                                 </Link>
@@ -40,7 +33,7 @@ export default function Home() {
                             <li>
                                 <Link href="/stages" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faBarsProgress} />
+                    <MdOutlineBarChart />
                   </span>
                                     Campaign Stages
                                 </Link>
@@ -56,7 +49,7 @@ export default function Home() {
                             <li>
                                 <Link href="/tasks" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faTasks} />
+                    <FaTasks />
                   </span>
                                     Task Tracking
                                 </Link>
@@ -64,7 +57,7 @@ export default function Home() {
                             <li>
                                 <Link href="/subscriptions" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faEnvelopeCircleCheck} />
+                    <AiOutlineMail />
                   </span>
                                     Subscription Management
                                 </Link>
@@ -72,7 +65,7 @@ export default function Home() {
                             <li>
                                 <Link href="/settings" className="flex items-center text-blue-400 hover:text-blue-300 transition duration-200">
                   <span className="mr-2 flex items-center justify-center w-6 h-6">
-                    <FontAwesomeIcon icon={faCogs} />
+                    <FaCogs />
                   </span>
                                     System Settings
                                 </Link>
