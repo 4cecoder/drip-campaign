@@ -1,4 +1,5 @@
 // stagesUtils.ts
+import { Stage, Step, EmailTemplate } from '@/lib/campaignTypes';
 import { Endpoints } from '@/lib/endpoints';
 import { get, post, put, del } from '../../lib/api';
 

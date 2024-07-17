@@ -10,85 +10,131 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Customer, DripCampaign} from './types';
 
-// Demo data
-const demoCustomers: Customer[] = [
-  { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', stage: 'Awareness', stagePoint: '1', inCampaign: true, campaignCustomerId: 1 },
-  { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', stage: 'Consideration', stagePoint: '2', inCampaign: true, campaignCustomerId: 2 },
-  { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', stage: 'Decision', stagePoint: '3', inCampaign: false, campaignCustomerId: 3 },
+import type { Customer, DripCampaign, Stage, Step } from '@/lib/campaignTypes';
+
+// Mock data
+const mockStages: Stage[] = [
+  {
+    id: 1,
+    name: 'Awareness',
+    steps: [
+      { id: 1, name: 'Initial Contact', stage_id: 1, wait_time: 0, email_template_id: 1, description: 'First contact with the customer', email_template: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), deleted_at: null, created_by: 1, updated_by: 1 },
+      { id: 2, name: 'Follow-up', stage_id: 1, wait_time: 86400, email_template_id: 2, description: 'Follow-up after initial contact', email_template: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), deleted_at: null, created_by: 1, updated_by: 1 },
+    ],
+    campaign_id: 1,
+    description: 'Awareness stage of the campaign',
+    order: 1,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    deleted_at: null,
+    created_by: 1,
+    updated_by: 1,
+  },
+  {
+    id: 2,
+    name: 'Consideration',
+    steps: [
+      { id: 3, name: 'Product Demo', stage_id: 2, wait_time: 172800, email_template_id: 3, description: 'Schedule and conduct product demo', email_template: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), deleted_at: null, created_by: 1, updated_by: 1 },
+      { id: 4, name: 'Case Studies', stage_id: 2, wait_time: 259200, email_template_id: 4, description: 'Send relevant case studies', email_template: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), deleted_at: null, created_by: 1, updated_by: 1 },
+    ],
+    campaign_id: 1,
+    description: 'Consideration stage of the campaign',
+    order: 2,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    deleted_at: null,
+    created_by: 1,
+    updated_by: 1,
+  },
+  {
+    id: 3,
+    name: 'Decision',
+    steps: [
+      { id: 5, name: 'Proposal', stage_id: 3, wait_time: 345600, email_template_id: 5, description: 'Send proposal', email_template: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), deleted_at: null, created_by: 1, updated_by: 1 },
+      { id: 6, name: 'Negotiation', stage_id: 3, wait_time: 432000, email_template_id: 6, description: 'Negotiation process', email_template: null, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), deleted_at: null, created_by: 1, updated_by: 1 },
+    ],
+    campaign_id: 1,
+    description: 'Decision stage of the campaign',
+    order: 3,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    deleted_at: null,
+    created_by: 1,
+    updated_by: 1,
+  },
+];
+
+const mockCustomers: Customer[] = [
+  { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', stage: 'Awareness', stagePoint: 'Initial Contact', inCampaign: true, campaignCustomerId: 101 },
+  { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', stage: 'Consideration', stagePoint: 'Product Demo', inCampaign: true, campaignCustomerId: 102 },
+  { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', stage: 'Decision', stagePoint: 'Proposal', inCampaign: false, campaignCustomerId: 103 },
   { id: 4, firstName: 'Alice', lastName: 'Brown', email: 'alice@example.com' },
   { id: 5, firstName: 'Charlie', lastName: 'Wilson', email: 'charlie@example.com' },
 ];
 
-const demoCampaigns: DripCampaign[] = [
-  { id: 1, name: 'Welcome Series', customers: [] },
-  { id: 2, name: 'Product Launch', customers: [] },
+const mockCampaigns: DripCampaign[] = [
+  { id: 1, name: 'Main Product Campaign', customers: [], stages: mockStages },
+  { id: 2, name: 'Newsletter Campaign', customers: [], stages: [] },
 ];
 
-type CustomerCardProps = {
-    customer: Customer;
-    onStageChange: (customerId: number, newStage: string) => void;
-    onStagePointChange: (customerId: number, newStagePoint: string) => void;
-    onCampaignToggle: (campaignCustomerId: number) => void;
-    onUnassign: (campaignCustomerId: number) => void;
-};
+// Mock context
+const useCampaignContext = () => {
+  const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
+  const [campaigns] = useState<DripCampaign[]>(mockCampaigns);
+  const [stages] = useState<Stage[]>(mockStages);
 
-type UnassignedCustomerCardProps = {
-    customer: Customer;
-    onAssign: (customerId: number, campaignId: number) => void;
+  return { customers, setCustomers, campaigns, stages };
 };
 
 const CustomerManagement: React.FC = () => {
-    const [assignedCustomers, setAssignedCustomers] = useState<Customer[]>([]);
-    const [unassignedCustomers, setUnassignedCustomers] = useState<Customer[]>([]);
-    const [campaigns] = useState<DripCampaign[]>(demoCampaigns);
+    const { customers, setCustomers, campaigns, stages } = useCampaignContext();
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        // Simulate fetching data
-        setTimeout(() => {
-            const assignedCustomers = demoCustomers.filter((customer) => customer.campaignCustomerId !== undefined);
-            const unassignedCustomers = demoCustomers.filter((customer) => customer.campaignCustomerId === undefined);
+    const assignedCustomers = customers.filter(customer => customer.campaignCustomerId !== undefined);
+    const unassignedCustomers = customers.filter(customer => customer.campaignCustomerId === undefined);
 
-            setAssignedCustomers(assignedCustomers);
-            setUnassignedCustomers(unassignedCustomers);
+    useEffect(() => {
+        // Simulate API call delay
+        const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 1500); // Simulate a 1.5 second loading time
+        }, 1000);
+
+        return () => clearTimeout(timer);
     }, []);
 
     const handleStageChange = (customerId: number, newStage: string) => {
-        setAssignedCustomers(prev => prev.map(customer => 
-            customer.id === customerId ? {...customer, stage: newStage} : customer
+        setCustomers(prev => prev.map(customer => 
+            customer.id === customerId ? {...customer, stage: newStage, stagePoint: undefined} : customer
         ));
     };
 
     const handleStagePointChange = (customerId: number, newStagePoint: string) => {
-        setAssignedCustomers(prev => prev.map(customer => 
+        setCustomers(prev => prev.map(customer => 
             customer.id === customerId ? {...customer, stagePoint: newStagePoint} : customer
         ));
     };
 
     const handleCampaignToggle = (campaignCustomerId: number) => {
-        setAssignedCustomers(prev => prev.map(customer => 
+        setCustomers(prev => prev.map(customer => 
             customer.campaignCustomerId === campaignCustomerId ? {...customer, inCampaign: !customer.inCampaign} : customer
         ));
     };
 
     const assignCustomer = (customerId: number, campaignId: number) => {
-        const customerToAssign = unassignedCustomers.find(c => c.id === customerId);
-        if (customerToAssign) {
-            setUnassignedCustomers(prev => prev.filter(c => c.id !== customerId));
-            setAssignedCustomers(prev => [...prev, {...customerToAssign, campaignCustomerId: Date.now(), inCampaign: true}]);
-        }
+        setCustomers(prev => prev.map(customer => 
+            customer.id === customerId 
+                ? {...customer, campaignCustomerId: Date.now(), inCampaign: true, stage: stages[0].name, stagePoint: stages[0].steps[0].name} 
+                : customer
+        ));
     };
 
     const unassignCustomer = (campaignCustomerId: number) => {
-        const customerToUnassign = assignedCustomers.find(c => c.campaignCustomerId === campaignCustomerId);
-        if (customerToUnassign) {
-            setAssignedCustomers(prev => prev.filter(c => c.campaignCustomerId !== campaignCustomerId));
-            setUnassignedCustomers(prev => [...prev, {...customerToUnassign, campaignCustomerId: undefined, inCampaign: false}]);
-        }
+        setCustomers(prev => prev.map(customer => 
+            customer.campaignCustomerId === campaignCustomerId 
+                ? {...customer, campaignCustomerId: undefined, inCampaign: false, stage: undefined, stagePoint: undefined} 
+                : customer
+        ));
     };
 
     return (
@@ -132,6 +178,7 @@ const CustomerManagement: React.FC = () => {
                                         onStagePointChange={handleStagePointChange}
                                         onCampaignToggle={handleCampaignToggle}
                                         onUnassign={unassignCustomer}
+                                        stages={stages}
                                     />
                                 ))
                             )}
@@ -165,60 +212,81 @@ const CustomerManagement: React.FC = () => {
     );
 };
 
+interface CustomerCardProps {
+    customer: Customer;
+    onStageChange: (customerId: number, stage: string) => void;
+    onStagePointChange: (customerId: number, stagePoint: string) => void;
+    onCampaignToggle: (campaignCustomerId: number) => void;
+    onUnassign: (campaignCustomerId: number) => void;
+    stages: Stage[];
+}
+
 const CustomerCard: React.FC<CustomerCardProps> = ({
     customer,
     onStageChange,
     onStagePointChange,
     onCampaignToggle,
     onUnassign,
-}) => (
-    <Card className="mb-4 bg-gray-700 border-gray-600">
-        <CardContent className="pt-6">
-            <h4 className="text-lg font-bold text-gray-200">{customer.firstName} {customer.lastName}</h4>
-            <p className="text-gray-400">Email: {customer.email}</p>
-            <div className="mt-4">
-                <label htmlFor={`stage-${customer.id}`} className="mr-2 text-gray-300">Campaign Stage:</label>
-                <Select onValueChange={(value) => onStageChange(customer.id, value)} value={customer.stage || ''}>
-                    <SelectTrigger className="bg-gray-600 text-gray-300 border-gray-500">
-                        <SelectValue placeholder="Select Stage" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-700 text-gray-300">
-                        <SelectItem value="unassigned">Unassigned</SelectItem>
-                        {/* Render stage options based on the campaign */}
-                    </SelectContent>
-                </Select>
-            </div>
-            {customer.stage && (
+    stages,
+}) => {
+    return (
+        <Card className="mb-4 bg-gray-700 border-gray-600">
+            <CardContent className="pt-6">
+                <h4 className="text-lg font-bold text-gray-200">{customer.firstName} {customer.lastName}</h4>
+                <p className="text-gray-400">Email: {customer.email}</p>
                 <div className="mt-4">
-                    <label htmlFor={`stagePoint-${customer.id}`} className="mr-2 text-gray-300">Stage Steps:</label>
-                    <Select onValueChange={(value) => onStagePointChange(customer.id, value)} value={customer.stagePoint || ''}>
+                    <label htmlFor={`stage-${customer.id}`} className="mr-2 text-gray-300">Campaign Stage:</label>
+                    <Select onValueChange={(value) => onStageChange(customer.id, value)} value={customer.stage || ''}>
                         <SelectTrigger className="bg-gray-600 text-gray-300 border-gray-500">
-                            <SelectValue placeholder="Select Step" />
+                            <SelectValue placeholder="Select Stage" />
                         </SelectTrigger>
                         <SelectContent className="bg-gray-700 text-gray-300">
                             <SelectItem value="unassigned">Unassigned</SelectItem>
-                            {/* Render stage point options based on the selected stage */}
+                            {stages.map(stage => (
+                                <SelectItem key={stage.id} value={stage.name}>{stage.name}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
-            )}
-            <div className="mt-4 flex gap-2">
-                <Button onClick={() => onCampaignToggle(customer.campaignCustomerId!)} className="bg-blue-600 hover:bg-blue-700 text-white">
-                    {customer.inCampaign ? <FaPause className="mr-2" /> : <FaPlay className="mr-2" />}
-                    {customer.inCampaign ? 'Pause Campaign' : 'Start Campaign'}
-                </Button>
-                <Button variant="secondary" onClick={() => {/* Add your send email function here */}} className="bg-gray-600 hover:bg-gray-500 text-gray-300">
-                    <FaEnvelope className="mr-2" />
-                    Send Email
-                </Button>
-                <Button variant="destructive" onClick={() => onUnassign(customer.campaignCustomerId!)} className="bg-red-600 hover:bg-red-700 text-white">
-                    <FaArrowRight className="mr-2" />
-                    Unassign
-                </Button>
-            </div>
-        </CardContent>
-    </Card>
-);
+                {customer.stage && (
+                    <div className="mt-4">
+                        <label htmlFor={`stagePoint-${customer.id}`} className="mr-2 text-gray-300">Stage Steps:</label>
+                        <Select onValueChange={(value) => onStagePointChange(customer.id, value)} value={customer.stagePoint || ''}>
+                            <SelectTrigger className="bg-gray-600 text-gray-300 border-gray-500">
+                                <SelectValue placeholder="Select Step" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-gray-700 text-gray-300">
+                                <SelectItem value="unassigned">Unassigned</SelectItem>
+                                {stages.find(s => s.name === customer.stage)?.steps.map(step => (
+                                    <SelectItem key={step.id} value={step.name}>{step.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )}
+                <div className="mt-4 flex gap-2">
+                    <Button onClick={() => onCampaignToggle(customer.campaignCustomerId!)} className="bg-blue-600 hover:bg-blue-700 text-white">
+                        {customer.inCampaign ? <FaPause className="mr-2" /> : <FaPlay className="mr-2" />}
+                        {customer.inCampaign ? 'Pause Campaign' : 'Start Campaign'}
+                    </Button>
+                    <Button variant="secondary" onClick={() => {/* Add your send email function here */}} className="bg-gray-600 hover:bg-gray-500 text-gray-300">
+                        <FaEnvelope className="mr-2" />
+                        Send Email
+                    </Button>
+                    <Button variant="destructive" onClick={() => onUnassign(customer.campaignCustomerId!)} className="bg-red-600 hover:bg-red-700 text-white">
+                        <FaArrowRight className="mr-2" />
+                        Unassign
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
+interface UnassignedCustomerCardProps {
+    customer: Customer;
+    onAssign: (customerId: number, campaignId: number) => void;
+}
 
 const UnassignedCustomerCard: React.FC<UnassignedCustomerCardProps> = ({ customer, onAssign }) => (
     <Card className="mb-4 bg-gray-700 border-gray-600">
@@ -252,7 +320,7 @@ const CustomerCardSkeleton: React.FC = () => (
 );
 
 const UnassignedCustomerCardSkeleton: React.FC = () => (
-    <Card className="mb-4 bg-gray-700 border-gray-600">
+    <Card className="mb-4 bg-gray-700 border-gray-700">
         <CardContent className="pt-6">
             <Skeleton className="h-6 w-1/3 mb-2" />
             <Skeleton className="h-4 w-2/3 mb-4" />

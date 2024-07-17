@@ -8,6 +8,7 @@ import { MdCampaign } from "react-icons/md";
 import { BsStopwatch } from "react-icons/bs";
 import { RiAuctionFill } from "react-icons/ri";
 import { Toaster } from "react-hot-toast";
+import { CampaignProvider } from '@/components/CampaignContext';
 
 export default function RootLayout({ children }: Readonly<{
     children: React.ReactNode;
@@ -30,7 +31,9 @@ export default function RootLayout({ children }: Readonly<{
         <body className="flex flex-row">
         <Toaster position="top-center" />
         {!isExcludedRoute && <Navbar items={items} />}
-        <main className={`w-full ${isExcludedRoute ? "" : ""}`}>{children}</main>
+        <CampaignProvider>
+            <main className={`w-full ${isExcludedRoute ? "" : ""}`}>{children}</main>
+        </CampaignProvider>
         </body>
         </html>
     );
