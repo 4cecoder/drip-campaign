@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { IconType } from "react-icons"
-import { FiSettings } from "react-icons/fi"
+import { FiLogIn, FiLogOut } from "react-icons/fi"
 
 interface SidebarNavItem {
     title: string,
@@ -47,24 +47,32 @@ function Navbar({ items }: DocsSidebarNavProps) {
                     ) : null}
                 </Link>
             ))}
-            {typeof window !== 'undefined' && window.localStorage.getItem("token") ?
-                <Link onClick={() => window.localStorage.setItem("token", "")} href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+            {typeof window !== 'undefined' && window.localStorage.getItem("token") ? (
+                <Link
+                    onClick={() => window.localStorage.setItem("token", "")}
+                    href={"/login"}
+                    className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}
+                >
                     <div className={"flex ml-3"}>
-                        <FiSettings className="w-5 h-5 mr-2" />
-                        <h4 className="select-none rounded-md px-2 text-sm font-medium">
+                        <FiLogOut className="w-5 h-5 mr-2 text-red-500" />
+                        <h4 className="select-none rounded-md px-2 text-sm font-medium text-red-500">
                             Logout
                         </h4>
                     </div>
-                </Link> : 
-                <Link href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+                </Link>
+            ) : (
+                <Link
+                    href={"/login"}
+                    className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}
+                >
                     <div className={"flex ml-3"}>
-                        <FiSettings className="w-5 h-5 mr-2" />
-                        <h4 className="select-none rounded-md px-2 text-sm font-medium">
+                        <FiLogIn className="w-5 h-5 mr-2 text-green-500" />
+                        <h4 className="select-none rounded-md px-2 text-sm font-medium text-green-500">
                             Login
                         </h4>
                     </div>
                 </Link>
-            }
+            )}
         </div>
     ) : null
 }
