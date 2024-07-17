@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { post } from "@/lib/api";
-import withAuth from "@/lib/withAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,28 +8,40 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { AlertCircle, User, Lock } from "lucide-react";
 import * as Yup from 'yup';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const loginSchema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required'),
 });
 
+// Mock user data for development
+const mockUsers = [
+    { username: 'user@example.com', password: 'password123' },
+    { username: 'admin@example.com', password: 'admin123' },
+];
+
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const router = useRouter();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
             await loginSchema.validate({ username, password }, { abortEarly: false });
-            let res = await post("login", {
-                email: username,
-                password: password
-            });
-            window.localStorage.setItem("token", res.data.token);
-            toast.success('Login successful!');
-            window.location.replace("/");
+            
+            // Mock authentication
+            const user = mockUsers.find(u => u.username === username && u.password === password);
+            if (user) {
+                // Simulate storing a token
+                window.localStorage.setItem("token", "mock-jwt-token");
+                toast.success('Login successful!');
+                router.push("/"); // Use router for navigation
+            } else {
+                throw new Error('Invalid credentials');
+            }
         } catch (e) {
             if (e instanceof Yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {};
@@ -121,4 +131,4 @@ const Login: React.FC = () => {
     );
 };
 
-export default withAuth(Login, true);
+export default Login;
