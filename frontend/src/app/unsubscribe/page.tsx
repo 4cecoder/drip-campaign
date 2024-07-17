@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, Suspense } from 'react';
-import withAuth from "@/app/util/withAuth";
+import withAuth from "@/lib/withAuth";
 
 const EmailUnsubscribeContent: React.FC = () => {
     const searchParams = useSearchParams();

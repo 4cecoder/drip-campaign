@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faTimesCircle, faCalendarDay, faUser, faClock, faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import withAuth from "@/app/util/withAuth";
+import withAuth from "@/lib/withAuth";
 
 type Task = {
     id: number;

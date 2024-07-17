@@ -4,7 +4,7 @@
 import React, {useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
-import withAuth from "@/app/util/withAuth";
+import withAuth from "@/lib/withAuth";
 
 type CRM = 'Enerflo' | 'HubSpot' | 'Salesforce';
 

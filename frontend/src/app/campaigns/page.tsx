@@ -2,18 +2,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faPlay,
-    faPause,
-    faEnvelope,
-    faArrowRight,
-    faArrowLeft,
-    faFileImport,
-    faPeopleRoof
-} from '@fortawesome/free-solid-svg-icons';
+import { FaPlay, FaPause, FaEnvelope, FaArrowRight, FaArrowLeft, FaFileImport, FaPeopleCarry} from 'react-icons/fa';
 import Link from "next/link";
-import withAuth from "@/app/util/withAuth";
+import withAuth from "@/lib/withAuth";
 import {
     Customer,
     updateCustomerStage,
@@ -69,9 +60,14 @@ const CustomerManagement: React.FC = () => {
         // Refresh the customer data or update the state accordingly
     };
 
-    const toggleCustomerCampaignStatus = async (campaignCustomerId: number) => {
+    const handleCampaignToggle = async (campaignCustomerId: number) => {
         await toggleCustomerCampaignStatus(campaignCustomerId);
-        // Refresh the customer data or update the state accordingly
+        // Refresh the customer data
+        const updatedCustomers = await fetchCustomers();
+        const assignedCustomers = updatedCustomers.filter((customer) => customer.campaignCustomerId !== undefined);
+        const unassignedCustomers = updatedCustomers.filter((customer) => customer.campaignCustomerId === undefined);
+        setAssignedCustomers(assignedCustomers);
+        setUnassignedCustomers(unassignedCustomers);
     };
 
     const assignCustomer = async (customerId: number, campaignId: number) => {
@@ -92,13 +88,13 @@ const CustomerManagement: React.FC = () => {
                 </h1>
                 <Link href={"/import"}>
                     <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 mb-4">
-                        <FontAwesomeIcon icon={faFileImport} className="mr-2" />
+                        <FaFileImport className="inline mr-2" />
                         Import Customers
                     </button>
                 </Link>
                 <Link href={"/customers"}>
                     <button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 ml-2 mb-4">
-                        <FontAwesomeIcon icon={faPeopleRoof} className="mr-2" />
+                        <FaPeopleCarry className="inline mr-2" />
                         Manage Customers
                     </button>
                 </Link>
@@ -113,7 +109,7 @@ const CustomerManagement: React.FC = () => {
                                 customer={customer}
                                 onStageChange={handleStageChange}
                                 onStagePointChange={handleStagePointChange}
-                                onCampaignToggle={toggleCustomerCampaignStatus}
+                                onCampaignToggle={handleCampaignToggle}
                                 onUnassign={unassignCustomer}
                             />
                         ))}
@@ -174,8 +170,8 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
             className="mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200"
             onClick={() => onCampaignToggle(customer.campaignCustomerId!)}
         >
-            <FontAwesomeIcon icon={customer.inCampaign ? faPause : faPlay} />
-            {customer.inCampaign ? ' Pause Campaign' : ' Start Campaign'}
+            {customer.inCampaign ? <FaPause className="inline mr-2" /> : <FaPlay className="inline mr-2" />}
+            {customer.inCampaign ? 'Pause Campaign' : 'Start Campaign'}
         </button>
         <button
             className="m-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 rounded transition duration-200"
@@ -183,14 +179,14 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
                 /* Add your send email function here */
             }}
         >
-            <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+            <FaEnvelope className="inline mr-2" />
             Send Email
         </button>
         <button
             className="m-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-2 px-4 rounded transition duration-200"
             onClick={() => onUnassign(customer.campaignCustomerId!)}
         >
-            <FontAwesomeIcon icon={faArrowRight} className="mr-2" />
+            <FaArrowRight className="inline mr-2" />
             Unassign
         </button>
     </div>
@@ -204,7 +200,7 @@ const UnassignedCustomerCard: React.FC<UnassignedCustomerCardProps> = ({ custome
             className="mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200"
             onClick={() => onAssign(customer.id, 1)} // Assuming campaign ID is 1
         >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+            <FaArrowLeft className="inline mr-2" />
             Assign to Campaign
         </button>
     </div>

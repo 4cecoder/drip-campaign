@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import withAuth from "@/app/util/withAuth";
+import withAuth from "@/lib/withAuth";
 
 type EmailStatus = 'Sent' | 'Delivered' | 'Opened' | 'Clicked' | 'Unsubscribed';
 type CampaignStage = 'Lead Generation' | 'Qualification' | 'Proposal' | 'Scheduled' | 'Signing' | 'Install' | 'Maintenance';

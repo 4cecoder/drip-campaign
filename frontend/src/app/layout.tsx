@@ -3,21 +3,25 @@ import "./globals.css";
 import React from "react";
 import Navbar from "@/app/components/Navbar";
 import { usePathname } from "next/navigation";
+import { FaHome, FaEnvelope, FaTasks, FaCog } from "react-icons/fa";
+import { MdCampaign } from "react-icons/md";
+import { BsStopwatch } from "react-icons/bs";
+import { RiAuctionFill } from "react-icons/ri";
 
 export default function RootLayout({ children }: Readonly<{
     children: React.ReactNode;
 }>) {
     const pathname = usePathname();
-    const isExcludedRoute = pathname === "/landing" || pathname === "/login" || pathname === "/signup" || pathname === "/unsubscribe" ||  pathname === "/login" || pathname === "/signup" || pathname === "/contact" ;
+    const isExcludedRoute = pathname === "/landing" || pathname === "/login" || pathname === "/signup" || pathname === "/unsubscribe" || pathname === "/contact";
 
     const items = [
-        { title: "Home", disabled: false, href: "/", external: false, items: [], src: "/home.svg" },
-        { title: "Campaigns", disabled: false, href: "/campaigns", external: false, items: [], src: "customer.svg" },
-        { title: "Emails", disabled: false, href: "/emails", external: false, items: [], src: "/email.svg" },
-        { title: "Stages", disabled: false, href: "/stages", external: false, items: [], src: "/stage.svg" },
-        { title: "Tasks", disabled: false, href: "/tasks", external: false, items: [], src: "/task.svg" },
-        { title: "Subscriptions", disabled: false, href: "/subscriptions", external: false, items: [], src: "/subscriptions.svg" },
-        { title: "Settings", disabled: false, href: "/settings", external: false, items: [], src: "/setting.svg" },
+        { title: "Home", disabled: false, href: "/", external: false, items: [], icon: FaHome },
+        { title: "Campaigns", disabled: false, href: "/campaigns", external: false, items: [], icon: MdCampaign },
+        { title: "Emails", disabled: false, href: "/emails", external: false, items: [], icon: FaEnvelope },
+        { title: "Stages", disabled: false, href: "/stages", external: false, items: [], icon: BsStopwatch },
+        { title: "Tasks", disabled: false, href: "/tasks", external: false, items: [], icon: FaTasks },
+        { title: "Subscriptions", disabled: false, href: "/subscriptions", external: false, items: [], icon: RiAuctionFill },
+        { title: "Settings", disabled: false, href: "/settings", external: false, items: [], icon: FaCog },
     ];
 
     return (

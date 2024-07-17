@@ -1,8 +1,7 @@
 // app/profile/page.tsx
 "use client";
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faPencilAlt, faSave, faTimes} from '@fortawesome/free-solid-svg-icons';
+import { MdEdit, MdSave, MdClose } from 'react-icons/md';
 
 const BusinessProfilePage = () => {
     const [businessName, setBusinessName] = useState('');
@@ -309,7 +308,7 @@ const BusinessProfilePage = () => {
                                 onClick={handleCancel}
                                 className="px-6 py-3 mt-6 mr-4 font-bold text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                             >
-                                <FontAwesomeIcon icon={faTimes} className="mr-2"/>
+                                <MdClose className="mr-2"/>
                                 Cancel
                             </button>
                             {formChanged && (
@@ -317,7 +316,7 @@ const BusinessProfilePage = () => {
                                     type="submit"
                                     className="px-6 py-3 mt-6 font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <FontAwesomeIcon icon={faSave} className="mr-2"/>
+                                    <MdSave className="mr-2"/>
                                     Save Profile
                                 </button>
                             )}
@@ -331,7 +330,7 @@ const BusinessProfilePage = () => {
                                 onClick={() => setIsEditing(true)}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <FontAwesomeIcon icon={faPencilAlt} className="mr-2"/>
+                                <MdEdit className="mr-2"/>
                                 Edit Profile
                             </button>
                         </div>

@@ -2,8 +2,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import {post} from "@/app/util/api";
-import withAuth from "@/app/util/withAuth";
+import {post} from "@/lib/api";
+import withAuth from "@/lib/withAuth";
 import {redirect} from "next/navigation";
 
 const testUsers = [

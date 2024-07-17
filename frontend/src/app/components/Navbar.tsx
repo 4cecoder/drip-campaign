@@ -2,41 +2,42 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-
+import Image from "next/image"
 import { cn } from "@/lib/utils"
-import Image from "next/image";
+import { IconType } from "react-icons"
+import { FiSettings } from "react-icons/fi"
 
 interface SidebarNavItem {
     title: string,
     disabled: boolean,
     href: string,
     external: boolean,
-    src:string,
-    items:SidebarNavItem[]
+    icon: IconType,
+    items: SidebarNavItem[]
 }
 
 export interface DocsSidebarNavProps {
     items: SidebarNavItem[]
 }
 
- function Navbar({ items }: DocsSidebarNavProps) {
+function Navbar({ items }: DocsSidebarNavProps) {
     const pathname = usePathname()
 
     return items.length ? (
         <div className="w-56 bg-gray-800 text-white">
-            <div className={"logo flex w-full p-2  items-center"}>
+            <div className={"logo flex w-full p-2 items-center"}>
                 <div className={"border-[1px] rounded-md p-[2px] flex items-center border-blue-400"}>
-                <div className={"bg-gray-600 rounded-md flex justify-center w-10"}>
-                    <Image src={"/logo.png"} className={""} height={20} width={20} alt={"Logo"}/>
-                </div>
-            <p className={"w-full m-0 p-0 text-sm ml-2"}> Drop Campaign </p>
+                    <div className={"bg-gray-600 rounded-md flex justify-center w-10"}>
+                        <Image src={"/logo.png"} className={""} height={20} width={20} alt={"Logo"}/>
+                    </div>
+                    <p className={"w-full m-0 p-0 text-sm ml-2"}> Drop Campaign </p>
                 </div>
             </div>
-               {items.map((item, index) => (
+            {items.map((item, index) => (
                 <Link href={item.href} key={index} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
-                    <div  className={"flex ml-3"}>
-                        <Image src={item?.src} className={""} height={20} width={20} alt={"Logo"}/>
-                        <h4 className="select-none rounded-md px-2 text-sm  font-medium">
+                    <div className={"flex ml-3"}>
+                        <item.icon className="w-5 h-5 mr-2" />
+                        <h4 className="select-none rounded-md px-2 text-sm font-medium">
                             {item.title}
                         </h4>
                     </div>
@@ -46,19 +47,20 @@ export interface DocsSidebarNavProps {
                     ) : null}
                 </Link>
             ))}
-            {window.localStorage.getItem("token")?
-                <Link onClick={()=> window.localStorage.setItem("token","")} href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
-                <div className={"flex ml-3"}>
-                    <Image src={"/setting.svg"} className={""} height={20} width={20} alt={"Logo"}/>
-                    <h4 className="select-none rounded-md px-2 text-sm  font-medium">
-                       Logout
-                    </h4>
-                </div>
-            </Link>: <Link href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
-                    <div  className={"flex ml-3"}>
-                        <Image src={"/setting.svg"} className={""} height={20} width={20} alt={"Logo"}/>
-                        <h4 className="select-none rounded-md px-2 text-sm  font-medium">
-                           Login
+            {typeof window !== 'undefined' && window.localStorage.getItem("token") ?
+                <Link onClick={() => window.localStorage.setItem("token", "")} href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+                    <div className={"flex ml-3"}>
+                        <FiSettings className="w-5 h-5 mr-2" />
+                        <h4 className="select-none rounded-md px-2 text-sm font-medium">
+                            Logout
+                        </h4>
+                    </div>
+                </Link> : 
+                <Link href={"/login"} className={"py-4 outline-none cursor-pointer hover:bg-gray-700 flex flex-col justify-center"}>
+                    <div className={"flex ml-3"}>
+                        <FiSettings className="w-5 h-5 mr-2" />
+                        <h4 className="select-none rounded-md px-2 text-sm font-medium">
+                            Login
                         </h4>
                     </div>
                 </Link>
@@ -66,8 +68,6 @@ export interface DocsSidebarNavProps {
         </div>
     ) : null
 }
-
-
 
 interface DocsSidebarNavItemsProps {
     items: SidebarNavItem[]

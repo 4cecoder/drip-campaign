@@ -1,5 +1,5 @@
 import { Endpoints } from '@/lib/endpoints';
-import { get, post, put } from '../util/api';
+import { get, post, put } from '../../lib/api';
 
 export type Customer = {
     id: number;

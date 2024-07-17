@@ -1,6 +1,6 @@
 // stagesUtils.ts
 import { Endpoints } from '@/lib/endpoints';
-import { get, post, put, del } from '../util/api';
+import { get, post, put, del } from '../../lib/api';
 
 export const fetchStages = async (): Promise<Stage[]> => {
     const response = await get(Endpoints.getStages);

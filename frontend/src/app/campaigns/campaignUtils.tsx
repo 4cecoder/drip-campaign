@@ -1,7 +1,7 @@
 // app/campaigns/campaignUtils.ts
 
 import { Endpoints } from '@/lib/endpoints';
-import { del, get, post, put } from '../util/api';
+import { del, get, post, put } from '@/lib/api';
 
 export type Customer = {
     id: number;

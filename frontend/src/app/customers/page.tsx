@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Link from "next/link";
-import withAuth from "@/app/util/withAuth";
+import withAuth from "@/lib/withAuth";
 import {
     fetchCustomers,
     updateCustomer,

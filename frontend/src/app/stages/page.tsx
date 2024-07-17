@@ -7,7 +7,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import EmailForm from './EmailForm';
 import StageComponent from './Stage';
 import WaitTimeInput from './WaitTimeInput';
-import withAuth from '@/app/util/withAuth';
+import withAuth from '@/lib/withAuth';
 import { fetchStages, createStage, updateStage, deleteStage, createStep, deleteStep, updateStep, createEmailTemplate } from './stagesUtils';
 
 const Stages: React.FC = () => {

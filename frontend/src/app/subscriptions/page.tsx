@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { MdEmail, MdAddCircle, MdCheckCircle, MdCancel, MdSave } from 'react-icons/md';
-import withAuth from "@/app/util/withAuth";
+import { MdEmail, MdAddCircle, MdCancel, MdSave } from 'react-icons/md';
+import withAuth from "@/lib/withAuth";
 import { fetchCustomers, updateCustomerSubscription, saveUnsubscribeTemplate } from './subscriptionsUtils';
 
 const Subscriptions: React.FC = () => {
@@ -62,7 +62,7 @@ const Subscriptions: React.FC = () => {
                                 className={`px-4 py-2 text-sm font-bold rounded flex items-center ${customer.subscribed ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
                                 onClick={() => toggleSubscription(customer.id)}
                             >
-                                {customer.subscribed ? <MdCancel className="mr-2" /> : <MdCheckCircle className="mr-2" />}
+                                {customer.subscribed ? <MdCancel className="mr-2" /> : <MdAddCircle className="mr-2" />}
                                 {customer.subscribed ? 'Unsubscribe' : 'Subscribe'}
                             </button>
                         </div>

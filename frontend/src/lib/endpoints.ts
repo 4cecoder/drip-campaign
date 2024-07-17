@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '@/lib/config';
 
 const API_BASE_URL = config.API_BASE_URL;
 
