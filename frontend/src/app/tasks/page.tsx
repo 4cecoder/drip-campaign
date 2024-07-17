@@ -1,10 +1,12 @@
-// app/tasks/page.tsx
-
 'use client';
 
 import React, { useState } from 'react';
-import { BsCheckCircle, BsXCircle, BsCalendarDay, BsPerson, BsClock, BsPersonCircle } from 'react-icons/bs';
+import { CalendarIcon, ClockIcon, UserIcon, CheckIcon, XIcon } from 'lucide-react';
 import withAuth from "@/lib/withAuth";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Task = {
     id: number;
@@ -61,42 +63,57 @@ const Tasks = () => {
     };
 
     return (
-        <div className="bg-black min-h-screen text-white p-8">
-            <h2 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-                Task Management
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {tasks.map((task) => (
-                    <div key={task.id} className="bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
-                        <h4 className="text-lg font-bold flex items-center mb-2">
-                            <BsCalendarDay className="mr-2" />
-                            {task.content}
-                        </h4>
-                        <p className="flex items-center mb-2">
-                            <BsClock className="mr-2" />
-                            Due: {task.dueDate} at {task.dueTime}
-                        </p>
-                        <p className="flex items-center mb-2">
-                            <BsPerson className="mr-2" />
-                            Assigned to: {task.userName}
-                        </p>
-                        <p className="flex items-center mb-2">
-                            <BsPersonCircle className="mr-2" />
-                            Customer: {task.customerName}
-                        </p>
-                        <p className="flex items-center mb-4">
-                            <BsPersonCircle className="mr-2" />
-                            Created by: {task.creatorName} on {task.createdDate}
-                        </p>
-                        <button
-                            className={`px-4 py-2 rounded flex items-center justify-center ${task.completed ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
-                            onClick={() => toggleTaskCompletion(task.id)}
-                        >
-                            {task.completed ? <BsXCircle className="mr-2" /> : <BsCheckCircle className="mr-2" />}
-                            {task.completed ? 'Mark Incomplete' : 'Mark Complete'}
-                        </button>
-                    </div>
-                ))}
+        <div className="min-h-screen bg-gray-900 text-white">
+            <div className="container mx-auto p-8">
+                <h2 className="text-4xl font-bold mb-8 text-center">
+                    Task Management
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {tasks.map((task) => (
+                        <Card key={task.id} className="bg-gray-800 border-gray-700">
+                            <CardHeader>
+                                <CardTitle className="flex items-center space-x-2 text-white">
+                                    <CalendarIcon className="h-5 w-5" />
+                                    <span>{task.content}</span>
+                                </CardTitle>
+                                <CardDescription className="flex items-center space-x-2 text-gray-400">
+                                    <ClockIcon className="h-4 w-4" />
+                                    <span>Due: {task.dueDate} at {task.dueTime}</span>
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="text-gray-300">
+                                <div className="flex items-center space-x-2 mb-2">
+                                    <UserIcon className="h-4 w-4" />
+                                    <span>Assigned to: {task.userName}</span>
+                                </div>
+                                <div className="flex items-center space-x-2 mb-2">
+                                    <Avatar>
+                                        <AvatarFallback>{task.customerName[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <span>Customer: {task.customerName}</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Avatar>
+                                        <AvatarFallback>{task.creatorName[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <span>Created by: {task.creatorName} on {task.createdDate}</span>
+                                </div>
+                            </CardContent>
+                            <CardFooter className="flex justify-between items-center">
+                                <Badge variant={task.completed ? "secondary" : "default"}>
+                                    {task.completed ? 'Completed' : 'In Progress'}
+                                </Badge>
+                                <Button
+                                    variant={task.completed ? "destructive" : "default"}
+                                    onClick={() => toggleTaskCompletion(task.id)}
+                                >
+                                    {task.completed ? <XIcon className="mr-2 h-4 w-4" /> : <CheckIcon className="mr-2 h-4 w-4" />}
+                                    {task.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
             </div>
         </div>
     );

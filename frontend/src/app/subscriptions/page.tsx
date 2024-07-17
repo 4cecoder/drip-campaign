@@ -1,12 +1,18 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { MdEmail, MdAddCircle, MdCancel, MdSave } from 'react-icons/md';
+import { Mail, Plus, X, Save, Search } from 'lucide-react';
 import withAuth from "@/lib/withAuth";
 import { Customer, fetchCustomers, updateCustomerSubscription, saveUnsubscribeTemplate } from './subscriptionsUtils';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import toast from 'react-hot-toast';
 
 const Subscriptions: React.FC = () => {
     const [emailSubscriptions, setEmailSubscriptions] = useState<Customer[]>([]);
     const [unsubscribeTemplate, setUnsubscribeTemplate] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -15,6 +21,7 @@ const Subscriptions: React.FC = () => {
                 setEmailSubscriptions(customers);
             } catch (error) {
                 console.error('Error fetching customers:', error);
+                toast.error('Failed to fetch customers');
             }
         };
 
@@ -29,77 +36,101 @@ const Subscriptions: React.FC = () => {
                     customer.id === id ? { ...customer, subscribed: !customer.subscribed } : customer
                 )
             );
+            toast.success('Subscription status updated');
         } catch (error) {
             console.error('Error updating subscription status:', error);
+            toast.error('Failed to update subscription');
         }
     };
 
     const handleSaveUnsubscribeTemplate = async () => {
         try {
             await saveUnsubscribeTemplate(unsubscribeTemplate);
-            console.log('Unsubscribe template saved successfully');
+            toast.success('Unsubscribe template saved successfully');
         } catch (error) {
             console.error('Error saving unsubscribe template:', error);
+            toast.error('Failed to save unsubscribe template');
         }
     };
 
+    const filteredSubscriptions = emailSubscriptions.filter(customer =>
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <div className="bg-black min-h-screen text-white p-8">
-            <h2 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+        <div className="bg-background text-foreground min-h-screen p-8 dark">
+            <h2 className="text-4xl font-bold mb-8 text-center text-primary">
                 Manage Email Subscriptions
             </h2>
-            <p className="mb-6 text-xl text-center">Search and manually manage customer E-Mail subscriptions for this system.</p>
+            <p className="mb-6 text-xl text-center text-muted-foreground">
+                Search and manually manage customer E-Mail subscriptions for this system.
+            </p>
 
-            <div className="max-w-xl mx-auto">
-                {emailSubscriptions.map(customer => (
-                    <div key={customer.id} className="mb-4 bg-black bg-opacity-50 rounded-lg p-6 shadow-md backdrop-filter backdrop-blur-lg border border-gray-700">
-                        <div className="flex justify-between items-center">
-                            <span>
-                                <MdEmail className="inline mr-2" />
+            <div className="max-w-xl mx-auto mb-6 relative">
+                <Input
+                    type="text"
+                    placeholder="Search email contacts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10"
+                />
+                <Search className="h-4 w-4 text-muted-foreground absolute left-3 top-1/2 transform -translate-y-1/2" />
+            </div>
+
+            <div className="max-w-xl mx-auto space-y-4">
+                {filteredSubscriptions.map(customer => (
+                    <Card key={customer.id}>
+                        <CardContent className="flex justify-between items-center p-4">
+                            <span className="flex items-center">
+                                <Mail className="mr-2 text-primary" />
                                 {customer.email}
                             </span>
-                            <button
-                                className={`px-4 py-2 text-sm font-bold rounded flex items-center ${customer.subscribed ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
+                            <Button
+                                variant={customer.subscribed ? "destructive" : "default"}
+                                size="sm"
                                 onClick={() => toggleSubscription(customer.id)}
                             >
-                                {customer.subscribed ? <MdCancel className="mr-2" /> : <MdAddCircle className="mr-2" />}
+                                {customer.subscribed ? <X className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
                                 {customer.subscribed ? 'Unsubscribe' : 'Subscribe'}
-                            </button>
-                        </div>
-                    </div>
+                            </Button>
+                        </CardContent>
+                    </Card>
                 ))}
             </div>
-            <div className="max-w-5xl mx-auto">
-                <h3 className="text-xl font-bold mb-3 mt-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+            <div className="max-w-5xl mx-auto mt-8">
+                <h3 className="text-xl font-bold mb-3 text-center text-primary">
                     Unsubscribe Email Template
                 </h3>
-                <div className="mb-4 bg-black bg-opacity-50 rounded-lg shadow-md backdrop-filter backdrop-blur-lg border border-gray-700 flex">
-                    <div className="w-1/2 p-4">
-                        <textarea
-                            className="w-full h-64 p-2 bg-gray-900 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={unsubscribeTemplate}
-                            onChange={(e) => setUnsubscribeTemplate(e.target.value)}
-                        />
-                        <div className="flex justify-center mt-2">
-                            <button
-                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
-                                onClick={handleSaveUnsubscribeTemplate}
-                            >
-                                <MdSave className="mr-2" />
-                                Save Template
-                            </button>
-                        </div>
-                    </div>
-                    <div className="w-1/2 p-4">
-                        <div className="bg-gray-500 rounded overflow-auto max-h-[300px] max-w-[500px]">
-                            <iframe
-                                srcDoc={unsubscribeTemplate}
-                                title="Unsubscribe Template Preview"
-                                className="w-full h-64 rounded"
+                <Card>
+                    <CardContent className="p-4 flex flex-col md:flex-row gap-4">
+                        <div className="w-full md:w-1/2">
+                            <Textarea
+                                className="w-full h-64"
+                                value={unsubscribeTemplate}
+                                onChange={(e) => setUnsubscribeTemplate(e.target.value)}
+                                placeholder="Enter unsubscribe template here..."
                             />
+                            <div className="flex justify-center mt-2">
+                                <Button
+                                    onClick={handleSaveUnsubscribeTemplate}
+                                    className="mt-2"
+                                >
+                                    <Save className="mr-2 h-4 w-4" />
+                                    Save Template
+                                </Button>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        <div className="w-full md:w-1/2">
+                            <div className="bg-muted rounded overflow-auto h-64">
+                                <iframe
+                                    srcDoc={unsubscribeTemplate}
+                                    title="Unsubscribe Template Preview"
+                                    className="w-full h-full rounded"
+                                />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
