@@ -1,12 +1,13 @@
 "use client";
 import "./globals.css";
 import React from "react";
-import Navbar from "@/app/components/Navbar";
+import Navbar from "@/components/Navbar";
 import { usePathname } from "next/navigation";
 import { FaHome, FaEnvelope, FaTasks, FaCog } from "react-icons/fa";
 import { MdCampaign } from "react-icons/md";
 import { BsStopwatch } from "react-icons/bs";
 import { RiAuctionFill } from "react-icons/ri";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({ children }: Readonly<{
     children: React.ReactNode;
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{
     return (
         <html lang="en">
         <body className="flex flex-row">
+        <Toaster position="top-center" />
         {!isExcludedRoute && <Navbar items={items} />}
         <main className={`w-full ${isExcludedRoute ? "" : ""}`}>{children}</main>
         </body>
