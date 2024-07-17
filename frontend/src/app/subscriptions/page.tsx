@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { MdEmail, MdAddCircle, MdCancel, MdSave } from 'react-icons/md';
 import withAuth from "@/lib/withAuth";
-import { fetchCustomers, updateCustomerSubscription, saveUnsubscribeTemplate } from './subscriptionsUtils';
+import { Customer, fetchCustomers, updateCustomerSubscription, saveUnsubscribeTemplate } from './subscriptionsUtils';
 
 const Subscriptions: React.FC = () => {
     const [emailSubscriptions, setEmailSubscriptions] = useState<Customer[]>([]);

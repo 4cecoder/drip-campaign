@@ -1,9 +1,21 @@
 // EmailForm.tsx
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { MdSave } from 'react-icons/md';
 import DOMPurify from 'dompurify';
 import { fetchEmailTemplate, updateEmailTemplate } from './stagesUtils';
+
+interface EmailTemplate {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    name: string;
+    subject: string;
+    body: string;
+    content_type: string;
+    created_by: number | null;
+    updated_by: number | null;
+}
 
 type EmailFormProps = {
     selectedStep: Step;
@@ -20,6 +32,8 @@ const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate
         subject: '',
         body: '',
         content_type: '',
+        created_by: null,
+        updated_by: null,
     });
 
     useEffect(() => {
@@ -27,7 +41,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate
             if (selectedStep.email_template_id) {
                 try {
                     const template = await fetchEmailTemplate(selectedStep.email_template_id);
-                    setEmailTemplate(template);
+                    setEmailTemplate(template as EmailTemplate);
                 } catch (error) {
                     console.error('Error fetching email template:', error);
                 }
@@ -41,6 +55,8 @@ const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate
                     subject: '',
                     body: '',
                     content_type: '',
+                    created_by: null,
+                    updated_by: null,
                 });
             }
         };
@@ -51,7 +67,8 @@ const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate
     const handleSaveEmailTemplate = async () => {
         try {
             if (selectedStep.email_template_id) {
-                await updateEmailTemplate(selectedStep.email_template_id, emailTemplate);
+                const { id, created_at, updated_at, deleted_at, created_by, updated_by, ...updateData } = emailTemplate;
+                await updateEmailTemplate(selectedStep.email_template_id, updateData);
                 console.log('Email template updated successfully');
             } else {
                 const newEmailTemplate = await createEmailTemplate(selectedStep.id);
@@ -101,9 +118,9 @@ const EmailForm: React.FC<EmailFormProps> = ({ selectedStep, createEmailTemplate
             </div>
             <button
                 onClick={handleSaveEmailTemplate}
-                className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200"
+                className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-200 flex items-center"
             >
-                <FontAwesomeIcon icon={faSave} className="mr-2" />
+                <MdSave className="mr-2" />
                 Save
             </button>
             {emailTemplate.body.trim() !== '' && (
