@@ -9,6 +9,7 @@ import withAuth from "@/lib/withAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Customer, DripCampaign} from './types';
 
 // Demo data
@@ -42,14 +43,18 @@ const CustomerManagement: React.FC = () => {
     const [assignedCustomers, setAssignedCustomers] = useState<Customer[]>([]);
     const [unassignedCustomers, setUnassignedCustomers] = useState<Customer[]>([]);
     const [campaigns] = useState<DripCampaign[]>(demoCampaigns);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Simulate fetching data
-        const assignedCustomers = demoCustomers.filter((customer) => customer.campaignCustomerId !== undefined);
-        const unassignedCustomers = demoCustomers.filter((customer) => customer.campaignCustomerId === undefined);
+        setTimeout(() => {
+            const assignedCustomers = demoCustomers.filter((customer) => customer.campaignCustomerId !== undefined);
+            const unassignedCustomers = demoCustomers.filter((customer) => customer.campaignCustomerId === undefined);
 
-        setAssignedCustomers(assignedCustomers);
-        setUnassignedCustomers(unassignedCustomers);
+            setAssignedCustomers(assignedCustomers);
+            setUnassignedCustomers(unassignedCustomers);
+            setIsLoading(false);
+        }, 1500); // Simulate a 1.5 second loading time
     }, []);
 
     const handleStageChange = (customerId: number, newStage: string) => {
@@ -114,16 +119,22 @@ const CustomerManagement: React.FC = () => {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {assignedCustomers.map((customer) => (
-                                <CustomerCard
-                                    key={customer.id}
-                                    customer={customer}
-                                    onStageChange={handleStageChange}
-                                    onStagePointChange={handleStagePointChange}
-                                    onCampaignToggle={handleCampaignToggle}
-                                    onUnassign={unassignCustomer}
-                                />
-                            ))}
+                            {isLoading ? (
+                                Array(3).fill(0).map((_, index) => (
+                                    <CustomerCardSkeleton key={index} />
+                                ))
+                            ) : (
+                                assignedCustomers.map((customer) => (
+                                    <CustomerCard
+                                        key={customer.id}
+                                        customer={customer}
+                                        onStageChange={handleStageChange}
+                                        onStagePointChange={handleStagePointChange}
+                                        onCampaignToggle={handleCampaignToggle}
+                                        onUnassign={unassignCustomer}
+                                    />
+                                ))
+                            )}
                         </CardContent>
                     </Card>
                     <Card className="bg-gray-800 border-gray-700">
@@ -133,13 +144,19 @@ const CustomerManagement: React.FC = () => {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {unassignedCustomers.map((customer) => (
-                                <UnassignedCustomerCard
-                                    key={customer.id}
-                                    customer={customer}
-                                    onAssign={assignCustomer}
-                                />
-                            ))}
+                            {isLoading ? (
+                                Array(3).fill(0).map((_, index) => (
+                                    <UnassignedCustomerCardSkeleton key={index} />
+                                ))
+                            ) : (
+                                unassignedCustomers.map((customer) => (
+                                    <UnassignedCustomerCard
+                                        key={customer.id}
+                                        customer={customer}
+                                        onAssign={assignCustomer}
+                                    />
+                                ))
+                            )}
                         </CardContent>
                     </Card>
                 </div>
@@ -212,6 +229,34 @@ const UnassignedCustomerCard: React.FC<UnassignedCustomerCardProps> = ({ custome
                 <FaArrowLeft className="mr-2" />
                 Assign to Campaign
             </Button>
+        </CardContent>
+    </Card>
+);
+
+const CustomerCardSkeleton: React.FC = () => (
+    <Card className="mb-4 bg-gray-700 border-gray-600">
+        <CardContent className="pt-6">
+            <Skeleton className="h-6 w-1/3 mb-2" />
+            <Skeleton className="h-4 w-2/3 mb-4" />
+            <div className="mt-4">
+                <Skeleton className="h-10 w-full mb-4" />
+                <Skeleton className="h-10 w-full mb-4" />
+            </div>
+            <div className="mt-4 flex gap-2">
+                <Skeleton className="h-10 w-1/3" />
+                <Skeleton className="h-10 w-1/3" />
+                <Skeleton className="h-10 w-1/3" />
+            </div>
+        </CardContent>
+    </Card>
+);
+
+const UnassignedCustomerCardSkeleton: React.FC = () => (
+    <Card className="mb-4 bg-gray-700 border-gray-600">
+        <CardContent className="pt-6">
+            <Skeleton className="h-6 w-1/3 mb-2" />
+            <Skeleton className="h-4 w-2/3 mb-4" />
+            <Skeleton className="h-10 w-1/2 mt-4" />
         </CardContent>
     </Card>
 );
