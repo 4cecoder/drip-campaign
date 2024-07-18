@@ -25,7 +25,7 @@
     "dompurify": "^3.1.6",
     "fuzzysort": "^3.0.2",
     "lucide-react": "^0.408.0",
-    "next": "14.2.4",
+    "next": "14.2.5",
     "react": "^18.3.1",
     "react-datepicker": "^7.3.0",
     "react-dom": "^18.3.1",
