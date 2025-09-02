@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  REQUESTER
+  VOLUNTEER
+}
+
+enum RequestStatus {
+  PENDING
+  MATCHED
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum AssistanceType {
+  SHELTER
+  FOOD
+  MEDICAL
+  RESCUE
+  TRANSPORT
+  OTHER
+}
+
+model User {
+  id               String            @id @default(cuid())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  name             String
+  phone            String            @unique
+  role             Role
+  latitude         Float?
+  longitude        Float?
+  lastSeenAt       DateTime?
+  volunteerProfile VolunteerProfile?
+  requests         HelpRequest[]     @relation("RequesterRequests")
+  offers           HelpOffer[]
+}
+
+model VolunteerProfile {
+  id                 String        @id @default(cuid())
+  user               User          @relation(fields: [userId], references: [id])
+  userId             String        @unique
+  available          Boolean       @default(true)
+  radiusKm           Int           @default(5)
+  skills             VolunteerSkill[]
+}
+
+model HelpRequest {
+  id             String         @id @default(cuid())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  requester      User           @relation("RequesterRequests", fields: [requesterId], references: [id])
+  requesterId    String
+  description    String
+  type           AssistanceType
+  latitude       Float
+  longitude      Float
+  status         RequestStatus  @default(PENDING)
+  matchedOffer   HelpOffer?
+}
+
+model HelpOffer {
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  volunteer      User          @relation(fields: [volunteerId], references: [id])
+  volunteerId    String
+  request        HelpRequest   @relation(fields: [requestId], references: [id])
+  requestId      String @unique
+  etaMinutes     Int?
+  message        String?
+}
+
+model VolunteerSkill {
+  id                  String            @id @default(cuid())
+  profile             VolunteerProfile  @relation(fields: [profileId], references: [id])
+  profileId           String
+  type                AssistanceType
+
+  @@unique([profileId, type])
+}
